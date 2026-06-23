@@ -15,14 +15,6 @@
     header h1 { font-size: 1.15rem; font-weight: 600; }
     header p { font-size: 0.82rem; opacity: 0.85; margin-top: 4px; }
     header .accuracy-note { font-size: 0.76rem; opacity: 0.75; margin-top: 6px; max-width: 520px; line-height: 1.4; }
-    header .tree-links {
-      font-size: 0.82rem; margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
-    }
-    header .tree-links a {
-      color: #aed6f1; text-decoration: none; border-bottom: 1px solid rgba(174, 214, 241, 0.45);
-    }
-    header .tree-links a:hover { color: #fff; border-bottom-color: #fff; }
-    header .tree-links .tree-label { opacity: 0.75; font-size: 0.76rem; }
     .legend { display: flex; flex-wrap: wrap; gap: 12px 16px; font-size: 0.76rem; max-width: 480px; }
     .legend span { display: flex; align-items: center; gap: 5px; }
     .dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.25); flex-shrink: 0; }
@@ -81,13 +73,8 @@
   <header>
     <div>
       <h1>מפת קברי המשפחה — שפירא · צוקרמן · לנאל · שרלין</h1>
-      <p>עבור דור מאיר · <strong>דורות מעליך</strong> = רק קו דם ישיר (שלמון = 2) · <strong>צדדי</strong> = אח/דוד/דודה (לא אב קדמון)</p>
+      <p><strong>דורות מעליך</strong> = קו דם ישיר · <strong>צדדי</strong> = אח/דוד/דודה (לא אב קדמון)</p>
       <p class="accuracy-note">מיקומים מדויקים: GPS מכרטיסי עיר דוד · דיוק משוער <strong>±10 מ'</strong> — מגיעים לחלקה/שורה, לא לשבריר הסנטימטר. ניווט בשטח לפי גוש · חלקה · שורה · מספר קבר.</p>
-      <p class="tree-links">
-        <span class="tree-label">עצי משפחה:</span>
-        <a href="https://www.myheritage.co.il/family-trees/%D7%A4%D7%90%D7%9C/OYYV6K4BGEW5FERSRNUY66G5IHC7SUY?familyTreeID=1" target="_blank" rel="noopener noreferrer">MyHeritage — משפחת פאל</a>
-        <a href="https://www.geni.com/family-tree/index/6000000004689077724" target="_blank" rel="noopener noreferrer">Geni — עץ המשפחה</a>
-      </p>
     </div>
     <div class="legend">
       <span><i class="dot dot-blood"></i> דם</span>
@@ -117,7 +104,7 @@
         death: "1910", cemetery: "הר הזיתים", plot: "אמצעי 2 · ב · שורה 19 · קבר 35",
         lat: 31.774603, lng: 35.242187,
         url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=74463" },
-      { id: "40371", name: "הדסה צוקרמן (שרלין)", kind: "ancestor", ancestorGen: 4, role: "סבת-סבא (אם ביילא גולדא · אם שלמון)", line: "צוקרמן", exact: true,
+      { id: "40371", name: "הדסה צוקרמן (שרלין)", kind: "ancestor", ancestorGen: 4, role: "סבת-סבא (אם ביילא גולדא)", line: "צוקרמן", exact: true,
         death: "1938", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 18",
         lat: 31.776742, lng: 35.242113, spread: [-0.000035, -0.000025],
         url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40371" },
@@ -133,7 +120,7 @@
         death: "1987", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 21",
         lat: 31.776761, lng: 35.242121, spread: [0.000035, 0.000025],
         url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40383" },
-      { id: "24815", name: "אהרן צבי לנאייל", kind: "collateral", role: "אח של סבתא מרים (בן פייבל)", line: "לנאל", exact: true,
+      { id: "24815", name: "אהרן צבי לנאייל", kind: "collateral", role: "קו לנאל (בן פייבל)", line: "לנאל", exact: true,
         death: "1939", cemetery: "הר הזיתים", plot: "ורשה · ורשה ב · שורה 13 · קבר 1",
         lat: 31.773158, lng: 35.245339,
         url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=24815" },
@@ -182,16 +169,10 @@
       { id: "benzion", name: "בן ציון שפירא", kind: "ancestor", ancestorGen: 3, role: "סבא-רבא", line: "שפירא", exact: false, cemeteryOnly: true,
         death: "1972", cemetery: "הר המנוחות", plot: "חלקה לא ידועה",
         lat: 31.79813, lng: 35.17773, offset: [0.0003, 0.0005] },
-      { id: "salmon", name: "שלמון שפירא", kind: "ancestor", ancestorGen: 2, role: "סבא", line: "שפירא", exact: false, cemeteryOnly: true,
-        death: "2013", cemetery: "הר המנוחות", plot: "חלקה לא ידועה",
-        lat: 31.79813, lng: 35.17773, offset: [0.0001, 0.0002] },
-      { id: "miriam", name: "מרים לנאייל שפירא", kind: "ancestor", ancestorGen: 2, role: "סבתא", line: "לנאל/שפירא", exact: false, cemeteryOnly: true,
-        death: "2023", cemetery: "הר המנוחות", plot: "חלקה לא ידועה",
-        lat: 31.79813, lng: 35.17773, offset: [-0.0001, 0.0004] },
-      { id: "avi", name: "אברהם יצחק לנאל", kind: "collateral", role: "אח של סבתא מרים", line: "לנאל", exact: false, cemeteryOnly: true,
+      { id: "avi", name: "אברהם יצחק לנאל", kind: "collateral", role: "דוד (קו לנאל)", line: "לנאל", exact: false, cemeteryOnly: true,
         death: "2013", cemetery: "הר המנוחות", plot: "סביר חלקת הרבנים",
         lat: 31.79813, lng: 35.17773, offset: [0.0005, 0.0000] },
-      { id: "sarah_lib", name: "שרה שפירא-ליברמן", kind: "collateral", role: "אחות סבא שלמון", line: "שפירא", exact: false, cemeteryOnly: true,
+      { id: "sarah_lib", name: "שרה שפירא-ליברמן", kind: "collateral", role: "דודה (קו שפירא)", line: "שפירא", exact: false, cemeteryOnly: true,
         death: "2008", cemetery: "הר המנוחות", plot: "חלקה לא ידועה",
         lat: 31.79813, lng: 35.17773, offset: [-0.0003, 0.0001] },
       { id: "gita", name: "גיטה מלכה שפירא (פרנק)", kind: "collateral", role: "בת-דודה של סבא-רבא (בן ציון)", line: "שפירא", exact: false, cemeteryOnly: true,
@@ -219,7 +200,7 @@
         lat: 31.7942, lng: 35.2268, offset: [0.0000, 0.0000] },
     ];
 
-    // מקורות: קישור = עמוד/כרטיס ייחודי לאדם; הערה = GEDCOM, Mehokek, חיפוש שלילי… (ראה עצים בראש הדף)
+    // מקורות: קישור = עמוד/כרטיס ייחודי לאדם; הערה = GEDCOM, Mehokek, חיפוש שלילי…
     const COD = (id) => `https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=${id}`;
     const srcLink = (text, url) => ({ type: "link", text, url });
     const srcNote = (text) => ({ type: "note", text });
@@ -235,7 +216,7 @@
       ],
       "40371": [
         srcLink("עיר דוד #40371 — מצבה: בת ניסן שרלין, אשת שמואל הלוי; גוש הנביאים ח/9/18", COD("40371")),
-        srcNote("GEDCOM: אם ביילא גולדא (אמא של שלמון) — לא אם מגאלדא"),
+        srcNote("GEDCOM: אם ביילא גולדא — לא אם מגאלדא"),
       ],
       "40375": [
         srcLink("עיר דוד #40375 — מצבה: מדפיס \"תורה מציון\"; גוש הנביאים ח/9/19", COD("40375")),
@@ -299,21 +280,13 @@
         srcLink("המכלול (חיים יעקב) — נכד; בן משולם זלמן", "https://www.hamichlol.org.il/%D7%A8%D7%91%D7%99_%D7%97%D7%99%D7%99%D7%9D_%D7%99%D7%A2%D7%A7%D7%91_%D7%A9%D7%A4%D7%99%D7%A8%D7%90"),
         srcNote("GEDCOM @I11@: נולד 1890; קבור הר המנוחות — חלקה לא ידועה"),
       ],
-      "salmon": [
-        srcLink("ויקיפדיה — מנהל בית-ספר קטמון; נפטר 2013", "https://he.wikipedia.org/wiki/%D7%A9%D7%9C%D7%9E%D7%95%D7%9F_%D7%A9%D7%A4%D7%99%D7%A8%D7%90"),
-        srcNote("GEDCOM @I79@: סבא; קבור הר המנוחות — חלקה לא ידועה"),
-      ],
-      "miriam": [
-        srcNote("GEDCOM @I124@: נולדה ~1926, נפטרה 22.6.2023; קבורה הר המנוחות — חלקה לא ידועה"),
-        srcLink("כאיל תערג עמ' 6 — בת שרגא פייבל + בתיה שושנה שולנסקי", "https://www.hebrewbooks.org/56578"),
-      ],
       "avi": [
         srcLink("ויקיפדיה — דיין; בג\"ד; נפטר 3.2.2013", "https://he.wikipedia.org/wiki/%D7%90%D7%91%D7%A8%D7%94%D7%9D_%D7%99%D7%A6%D7%97%D7%A7_%D7%9C%D7%A0%D7%90%D7%9C"),
         srcLink("המכלול — ביוגרפיה; קבור הר המנוחות (חלקת הרבנים)", "https://www.hamichlol.org.il/%D7%A8%D7%91%D7%99_%D7%90%D7%91%D7%A8%D7%94%D7%9D_%D7%99%D7%A6%D7%97%D7%A7_%D7%9C%D7%A0%D7%90%D7%9C"),
         srcLink("כאיל תערג — ספר זיכרון עליו; עמ' 6–7: אמו בתיה שולנסקי", "https://www.hebrewbooks.org/56578"),
       ],
       "sarah_lib": [
-        srcNote("GEDCOM @I82@: אחות שלמון; נ' 1918, נפטרה 2008 פ\"ת; הר המנוחות"),
+        srcNote("GEDCOM @I82@: נ' 1918, נפטרה 2008 פ\"ת; הר המנוחות"),
       ],
       "gita": [
         srcLink("המכלול (פרנק) — עלתה עם חיים יעקב 1891; נישאה לפרנק תרנ\"ה", "https://www.hamichlol.org.il/%D7%A6%D7%91%D7%99_%D7%A4%D7%A1%D7%97_%D7%9E%D7%99%D7%99%D7%A1_%D7%A4%D7%A8%D7%A0%D7%A7"),
@@ -332,7 +305,7 @@
         srcNote("GEDCOM: בעל לאה מרים שפירא; קבור הר המנוחות"),
       ],
       "yaakovov": [
-        srcNote("GEDCOM @I129@: בעל שרה (אחות שלמון); נפטר 5.3.1953; הר המנוחות"),
+        srcNote("GEDCOM @I129@: נפטר 5.3.1953; הר המנוחות"),
       ],
       "tzipora": [
         srcLink("ויקיפדיה (אריה לוין) — נפטרה כ\"ו אדר תשי\"ב; קבורה סנהדריה לידו", "https://he.wikipedia.org/wiki/%D7%90%D7%A8%D7%99%D7%94_%D7%9C%D7%95%D7%99%D7%9F"),
@@ -431,20 +404,13 @@
     }).addTo(map);
 
     const sidebar = document.getElementById("sidebar");
-    const treeNav = document.createElement("div");
-    treeNav.className = "tree-links";
-    treeNav.style.cssText = "padding:8px 10px 10px;margin-bottom:6px;border-bottom:1px solid #e8e8e8;font-size:0.8rem;line-height:1.5;";
-    treeNav.innerHTML = `<strong style="display:block;margin-bottom:4px;color:#555;">עצי משפחה</strong>
-      <a href="https://www.myheritage.co.il/family-trees/%D7%A4%D7%90%D7%9C/OYYV6K4BGEW5FERSRNUY66G5IHC7SUY?familyTreeID=1" target="_blank" rel="noopener noreferrer" style="color:#2980b9;display:block;margin-bottom:3px;">MyHeritage — משפחת פאל</a>
-      <a href="https://www.geni.com/family-tree/index/6000000004689077724" target="_blank" rel="noopener noreferrer" style="color:#2980b9;display:block;">Geni — עץ המשפחה</a>`;
-    sidebar.appendChild(treeNav);
     const markers = {};
 
     const sections = [
-      { title: "הר הזיתים — מיקום מדויק ±10 מ' (13)", filter: g => g.exact && g.cemetery === "הר הזיתים" },
-      { title: "הר הזיתים — ללא מיקום מדויק (4)", filter: g => !g.exact && g.cemetery === "הר הזיתים" },
-      { title: "הר המנוחות (9)", filter: g => g.cemetery === "הר המנוחות" },
-      { title: "סנהדריה (2)", filter: g => g.cemetery.includes("סנהדריה") },
+      { title: "הר הזיתים — מיקום מדויק ±10 מ'", filter: g => g.exact && g.cemetery === "הר הזיתים" },
+      { title: "הר הזיתים — ללא מיקום מדויק", filter: g => !g.exact && g.cemetery === "הר הזיתים" },
+      { title: "הר המנוחות", filter: g => g.cemetery === "הר המנוחות" },
+      { title: "סנהדריה", filter: g => g.cemetery.includes("סנהדריה") },
     ];
 
     const markerLayers = [];
@@ -452,7 +418,8 @@
       const items = GRAVES.filter(sec.filter);
       if (!items.length) return;
       const h2 = document.createElement("h2");
-      h2.textContent = sec.title;
+      const n = items.length;
+      h2.textContent = n ? `${sec.title} (${n})` : sec.title;
       sidebar.appendChild(h2);
       items.forEach(g => {
         const lat = g.lat + (g.offset ? g.offset[0] : 0);
