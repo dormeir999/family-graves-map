@@ -333,7 +333,7 @@
     }
 
     function relationLabel(g) {
-      if (g.kind === "ancestor") return `${g.ancestorGen} דורות מעליך · ${g.role}`;
+      if (g.kind === "ancestor") return `${g.ancestorGen} דורות · ${g.role}`;
       if (g.kind === "collateral") return `קרוב צדדי · ${g.role}`;
       if (g.kind === "inlaw") {
         const tier = g.ancestorGen ? `${g.ancestorGen} דורות (נישואין) · ` : "";
