@@ -95,7 +95,7 @@
     // kind: ancestor | collateral | inlaw — collateral shares a tier but is NOT an ancestor.
     const GRAVES = [
       // ── הר הזיתים — מיקום מדויק ──
-      { id: "83877", name: "גאלדא צוקרמאן", kind: "inlaw", role: "נישואין · אשת שמואל (ראשונה — לא אם ביילא)", line: "צוקרמן", exact: true,
+      { id: "83877", name: "גאלדא צוקרמאן", kind: "inlaw", role: "נישואין · אשת שמואל", line: "צוקרמן", exact: true,
         death: "1890", cemetery: "הר הזיתים", plot: "ישן · ט · שורה 11 · קבר 39",
         lat: 31.777019, lng: 35.241973,
         url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=83877" },
@@ -103,11 +103,11 @@
         death: "1910", cemetery: "הר הזיתים", plot: "אמצעי 2 · ב · שורה 19 · קבר 35",
         lat: 31.774603, lng: 35.242187,
         url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=74463" },
-      { id: "40371", name: "הדסה צוקרמן (שרלין)", kind: "ancestor", ancestorGen: 4, role: "סבת-סבא (אם ביילא גולדא)", line: "צוקרמן", exact: true,
+      { id: "40371", name: "הדסה צוקרמן (שרלין)", kind: "ancestor", ancestorGen: 4, role: "סבת-סבא", line: "צוקרמן", exact: true,
         death: "1938", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 18",
         lat: 31.776742, lng: 35.242113, spread: [-0.000035, -0.000025],
         url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40371" },
-      { id: "40375", name: "שמואל הלוי צוקרמן", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (אבי ביילא גולדא · צד אמא)", line: "צוקרמן", exact: true,
+      { id: "40375", name: "שמואל הלוי צוקרמן", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא", line: "צוקרמן", exact: true,
         death: "1929", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 19",
         lat: 31.776748, lng: 35.242115, spread: [-0.000012, 0.000008],
         url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40375" },
@@ -151,13 +151,13 @@
         url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48739" },
 
       // ── הר הזיתים — ללא חלקה במאגר ──
-      { id: "yaakov1887", name: "יעקב הלוי צוקרמן", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא (אבי שמואל · צד אמא) · הקבר הישן ביותר", line: "צוקרמן", exact: false,
+      { id: "yaakov1887", name: "יעקב הלוי צוקרמן", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא · הקבר הישן ביותר", line: "צוקרמן", exact: false,
         death: "1887", cemetery: "הר הזיתים", plot: "לא במאגר — שאל במשרד (02-6275050)",
         lat: 31.7730, lng: 35.2430, offset: [0.0008, 0.0012] },
-      { id: "aaron1904", name: "רבי אהרן לנאל", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (צד סבתא · אבי שרגא פייבל)", line: "לנאל", exact: false,
+      { id: "aaron1904", name: "רבי אהרן לנאל", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא", line: "לנאל", exact: false,
         death: "1904", cemetery: "הר הזיתים", plot: "לא במאגר — שאל במשרד",
         lat: 31.7730, lng: 35.2430, offset: [0.0004, 0.0006] },
-      { id: "meshulam1903", name: "משולם זלמן שפירא", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (צד שפירא)", line: "שפירא", exact: false,
+      { id: "meshulam1903", name: "משולם זלמן שפירא", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא", line: "שפירא", exact: false,
         death: "1903", cemetery: "הר הזיתים", plot: "חלקת פרושים — לא במאגר",
         lat: 31.7730, lng: 35.2430, offset: [0.0000, 0.0003] },
       { id: "chaim1908", name: "רבי חיים יעקב שפירא", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא · בעלה של אסתר ליבא", line: "שפירא", exact: false,
@@ -174,7 +174,7 @@
       { id: "sarah_lib", name: "שרה שפירא-ליברמן", kind: "collateral", role: "דודה (קו שפירא)", line: "שפירא", exact: false, cemeteryOnly: true,
         death: "2008", cemetery: "הר המנוחות", plot: "חלקה לא ידועה",
         lat: 31.79813, lng: 35.17773, offset: [-0.0003, 0.0001] },
-      { id: "gita", name: "גיטה מלכה שפירא (פרנק)", kind: "collateral", role: "בת-דודה של סבא-רבא (בן ציון)", line: "שפירא", exact: false, cemeteryOnly: true,
+      { id: "gita", name: "גיטה מלכה שפירא (פרנק)", kind: "collateral", role: "בת-דודה (קו שפירא)", line: "שפירא", exact: false, cemeteryOnly: true,
         death: "1960", cemetery: "הר המנוחות", plot: "ליד בעלה הרב צבי פסח פרנק",
         lat: 31.79813, lng: 35.17773, offset: [0.0002, -0.0003] },
       { id: "frank", name: "הרב צבי פסח פרנק", kind: "inlaw", role: "בעל גיטה מלכה", line: "שפירא", exact: false, cemeteryOnly: true,
@@ -183,7 +183,7 @@
       { id: "levin_md", name: "מרדכי דוד לוין", kind: "inlaw", role: "חתן משפחת שפירא", line: "שפירא", exact: false, cemeteryOnly: true,
         death: "1967", cemetery: "הר המנוחות", plot: "חלקת הרבנים",
         lat: 31.79813, lng: 35.17773, offset: [-0.0002, -0.0004] },
-      { id: "yellin", name: "יצחק יעקב ילין", kind: "inlaw", role: "בעל לאה מרים שפירא", line: "שפירא", exact: false, cemeteryOnly: true,
+      { id: "yellin", name: "יצחק יעקב ילין", kind: "inlaw", role: "חם (קו שפירא)", line: "שפירא", exact: false, cemeteryOnly: true,
         death: "1964", cemetery: "הר המנוחות", plot: "חלקה לא ידועה",
         lat: 31.79813, lng: 35.17773, offset: [-0.0004, 0.0003] },
       { id: "yaakovov", name: "שמעון ישראל יעקובוביץ", kind: "inlaw", role: "בעל דודה (שרה)", line: "שפירא", exact: false, cemeteryOnly: true,
@@ -191,7 +191,7 @@
         lat: 31.79813, lng: 35.17773, offset: [-0.0005, 0.0001] },
 
       // ── סנהדריה ──
-      { id: "tzipora", name: "צפורה חנה שפירא (לוין)", kind: "collateral", role: "בת-דודה של סבא-רבא (בן ציון)", line: "שפירא", exact: false, cemeteryOnly: true,
+      { id: "tzipora", name: "צפורה חנה שפירא (לוין)", kind: "collateral", role: "בת-דודה (קו שפירא)", line: "שפירא", exact: false, cemeteryOnly: true,
         death: "1952", cemetery: "בית הקברות סנהדריה", plot: "ליד בעלה הרב אריה לוין",
         lat: 31.7942, lng: 35.2268, offset: [0.0002, 0.0001] },
       { id: "aryeh", name: "הרב אריה לוין", kind: "inlaw", role: "בעל צפורה חנה", line: "שפירא", exact: false, cemeteryOnly: true,
@@ -215,12 +215,12 @@
       ],
       "40371": [
         srcLink("עיר דוד #40371 — מצבה: בת ניסן שרלין, אשת שמואל הלוי; גוש הנביאים ח/9/18", COD("40371")),
-        srcNote("GEDCOM: אם ביילא גולדא — לא אם מגאלדא"),
+        srcNote("GEDCOM: מצבה מאושרת — לא אימות מגאלדא"),
       ],
       "40375": [
         srcLink("עיר דוד #40375 — מצבה: מדפיס \"תורה מציון\"; גוש הנביאים ח/9/19", COD("40375")),
         srcLink("mountofolives.co.il #19662 — אותו קבר", "https://www.mountofolives.co.il/grave/19662/"),
-        srcNote("GEDCOM: סב-סבא צד אמא; עלה מפולין 1863"),
+        srcNote("GEDCOM: עלה מפולין 1863"),
       ],
       "40379": [
         srcLink("עיר דוד #40379 — בן שמואל; מחבר \"אוצר חיים\"; גוש הנביאים ח/9/20", COD("40379")),
@@ -230,11 +230,11 @@
       ],
       "24815": [
         srcLink("עיר דוד #24815 — מצבה: בן פייבל; נ' כ' תשרי ת\"ש; גוש ורשה · ורשה ב · 13/1", COD("24815")),
-        srcNote("כאיל תערג: אח של אברהם יצחק לנאל; אב \"פייבל\" גם על המצבה"),
+        srcNote("כאיל תערג: אב \"פייבל\" גם על המצבה"),
       ],
       "63478": [
         srcLink("עיר דוד #63478 — \"מזקני ירושלם\"; בן ירמיהו; משקלוב; נ' 1895", COD("63478")),
-        srcNote("קשר משוער: אח/דוד של ניסן שרלין (אבי הדסה)"),
+        srcNote("קשר משוער: קו שרלין"),
       ],
       "70477": [
         srcLink("עיר דוד #70477 — אשת ר' מרדכי ניסן שרלין; בת דוד שותיק הכהן; נ' 1916", COD("70477")),
@@ -289,7 +289,7 @@
       ],
       "gita": [
         srcLink("המכלול (פרנק) — עלתה עם חיים יעקב 1891; נישאה לפרנק תרנ\"ה", "https://www.hamichlol.org.il/%D7%A6%D7%91%D7%99_%D7%A4%D7%A1%D7%97_%D7%9E%D7%99%D7%99%D7%A1_%D7%A4%D7%A8%D7%A0%D7%A7"),
-        srcNote("GEDCOM: בת-דודה של בן ציון; קבורה ליד בעלה"),
+        srcNote("GEDCOM: קבורה ליד בעלה"),
       ],
       "frank": [
         srcLink("ויקיפדיה — רבה הראשי; נפטר תשכ\"א", "https://he.wikipedia.org/wiki/%D7%A6%D7%91%D7%99_%D7%A4%D7%A1%D7%97_%D7%9E%D7%99%D7%99%D7%A1_%D7%A4%D7%A8%D7%A0%D7%A7"),
@@ -301,14 +301,14 @@
       ],
       "yellin": [
         srcLink("ויקיפדיה — חלוץ עיתונות; נפטר 1964", "https://he.wikipedia.org/wiki/%D7%99%D7%A6%D7%97%D7%A7_%D7%99%D7%A2%D7%A7%D7%91_%D7%99%D7%9C%D7%99%D7%9F"),
-        srcNote("GEDCOM: בעל לאה מרים שפירא; קבור הר המנוחות"),
+        srcNote("GEDCOM: קבור הר המנוחות"),
       ],
       "yaakovov": [
         srcNote("GEDCOM @I129@: נפטר 5.3.1953; הר המנוחות"),
       ],
       "tzipora": [
         srcLink("ויקיפדיה (אריה לוין) — נפטרה כ\"ו אדר תשי\"ב; קבורה סנהדריה לידו", "https://he.wikipedia.org/wiki/%D7%90%D7%A8%D7%99%D7%94_%D7%9C%D7%95%D7%99%D7%9F"),
-        srcNote("GEDCOM: בת דוד שפירא; בת-דודה של בן ציון"),
+        srcNote("GEDCOM: בת דוד שפירא"),
       ],
       "aryeh": [
         srcLink("ויקיפדיה — \"אב האסירים\"; נפטר 1969", "https://he.wikipedia.org/wiki/%D7%90%D7%A8%D7%99%D7%94_%D7%9C%D7%95%D7%99%D7%9F"),
