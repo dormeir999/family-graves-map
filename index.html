@@ -7,14 +7,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { height: 100%; }
-    html, body { width: 100%; margin: 0; padding: 0; overflow: hidden; }
-    body {
-      font-family: "Segoe UI", Tahoma, Arial, sans-serif; background: #f4f2ee; color: #1a1a1a;
-      display: flex; flex-direction: column; height: 100%; min-height: 100vh; min-height: 100dvh;
-    }
+    body { font-family: "Segoe UI", Tahoma, Arial, sans-serif; background: #f4f2ee; color: #1a1a1a; }
     header {
-      flex-shrink: 0;
       background: #2c3e50; color: #fff; padding: 14px 20px;
       display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; justify-content: space-between;
     }
@@ -33,37 +27,23 @@
       width: 14px; height: 14px; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.7);
       background: rgba(255,255,255,0.12); flex-shrink: 0;
     }
-    #layout {
-      flex: 1; min-height: 0; width: 100%;
-      direction: ltr; /* map left, sidebar right — avoid RTL grid quirks */
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 320px;
-      grid-template-areas: "map sidebar";
-      overflow: hidden;
-    }
+    #layout { display: flex; height: calc(100vh - 118px); }
     #sidebar {
-      grid-area: sidebar;
-      direction: rtl;
-      text-align: right;
-      min-width: 0; max-width: 320px; width: 100%;
-      overflow-x: hidden; overflow-y: auto; background: #fff;
-      border-left: 1px solid #ddd;
-      padding: 10px 18px 10px 12px;
-      box-sizing: border-box;
+      width: 340px; min-width: 280px; overflow-y: auto; background: #fff;
+      border-left: 1px solid #ddd; padding: 10px;
     }
-    #sidebar h2 { font-size: 0.9rem; margin: 8px 0 6px; color: #555; padding-inline: 2px; }
+    #sidebar h2 { font-size: 0.9rem; margin: 8px 0 6px; color: #555; }
     .grave-item {
       padding: 8px 10px; margin-bottom: 6px; border-radius: 6px; cursor: pointer;
       border: 1px solid #e8e8e8; font-size: 0.82rem; line-height: 1.45;
-      overflow-wrap: anywhere; word-break: break-word; max-width: 100%;
     }
     .grave-item:hover { background: #f9f7f3; border-color: #ccc; }
     .grave-item.active { background: #eef4fb; border-color: #2980b9; }
-    .grave-item .name { font-weight: 600; overflow-wrap: anywhere; }
-    .grave-item .meta { color: #666; font-size: 0.76rem; margin-top: 2px; overflow-wrap: anywhere; }
+    .grave-item .name { font-weight: 600; }
+    .grave-item .meta { color: #666; font-size: 0.76rem; margin-top: 2px; }
     .tag {
       display: inline-block; font-size: 0.68rem; padding: 1px 6px; border-radius: 3px;
-      margin-inline-start: 4px; vertical-align: middle;
+      margin-left: 4px; vertical-align: middle;
     }
     .tag-blood { background: #fdecea; color: #922b21; }
     .tag-inlaw { background: #eaf2f8; color: #1a5276; }
@@ -71,13 +51,8 @@
     .tag-approx { background: #fef9e7; color: #9a7d0a; }
     .tag-gen { background: #f4ecf7; color: #6c3483; }
     .tag-side { background: #fdebd0; color: #a04000; }
-    #map { grid-area: map; min-width: 0; min-height: 0; height: 100%; width: 100%; }
-    .leaflet-popup-content-wrapper {
-      max-height: min(480px, calc(100vh - 140px));
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .leaflet-popup-content { font-size: 0.85rem; line-height: 1.5; max-width: 320px; margin: 12px 18px; }
+    #map { flex: 1; min-height: 400px; }
+    .leaflet-popup-content { font-size: 0.85rem; line-height: 1.5; max-width: 320px; }
     .popup-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
     .popup-profiles { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
     .profile-btn {
@@ -96,14 +71,9 @@
     .popup-sources a { pointer-events: auto; cursor: pointer; }
     .popup-accuracy { font-size: 0.78rem; color: #555; margin-top: 6px; padding-top: 6px; border-top: 1px solid #eee; }
     @media (max-width: 768px) {
-      body { overflow: auto; }
-      #layout {
-        grid-template-columns: 1fr;
-        grid-template-areas: "map" "sidebar";
-        height: auto;
-      }
-      #sidebar { max-width: none; max-height: 40vh; border-left: none; border-top: 1px solid #ddd; padding: 10px 16px; }
-      #map { height: 55vh; min-height: 55vh; }
+      #layout { flex-direction: column-reverse; height: auto; }
+      #sidebar { width: 100%; max-height: 40vh; border-left: none; border-top: 1px solid #ddd; }
+      #map { height: 55vh; }
     }
   </style>
 </head>
@@ -124,8 +94,8 @@
     </div>
   </header>
   <div id="layout">
-    <div id="map"></div>
     <div id="sidebar"></div>
+    <div id="map"></div>
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
@@ -469,50 +439,6 @@
         .replace(/"/g, "&quot;");
     }
 
-    function popupOpts() {
-      return {
-        maxWidth: 320,
-        maxHeight: Math.min(480, Math.max(300, window.innerHeight - 160)),
-        autoPan: true,
-        autoPanPaddingTopLeft: L.point(70, 110),
-        autoPanPaddingBottomRight: L.point(70, 70),
-        keepInView: true,
-      };
-    }
-
-    function ensurePopupInView(popup) {
-      const el = popup.getElement();
-      if (!el) return;
-      const mapRect = map.getContainer().getBoundingClientRect();
-      const popRect = el.getBoundingClientRect();
-      const pad = 20;
-      let dx = 0;
-      let dy = 0;
-      if (popRect.top < mapRect.top + pad) dy = popRect.top - mapRect.top - pad;
-      if (popRect.bottom > mapRect.bottom - pad) dy = popRect.bottom - mapRect.bottom + pad;
-      if (popRect.left < mapRect.left + pad) dx = popRect.left - mapRect.left - pad;
-      if (popRect.right > mapRect.right - pad) dx = popRect.right - mapRect.right + pad;
-      if (dx || dy) map.panBy([-dx, -dy], { animate: true, duration: 0.25 });
-    }
-
-    function attachPopup(marker, grave) {
-      marker.bindPopup(popupHtml(grave), popupOpts());
-      marker.on("popupopen", () => {
-        const popup = marker.getPopup();
-        const el = popup?.getElement();
-        if (!el) return;
-        L.DomEvent.disableClickPropagation(el);
-        L.DomEvent.disableScrollPropagation(el);
-        el.querySelectorAll("a").forEach((a) => L.DomEvent.disableClickPropagation(a));
-        const wrap = el.querySelector(".leaflet-popup-content-wrapper");
-        if (wrap) wrap.scrollTop = 0;
-        requestAnimationFrame(() => {
-          if (wrap) wrap.scrollTop = 0;
-          ensurePopupInView(popup);
-        });
-      });
-    }
-
     function popupHtml(g) {
       const typeLabel = kindLabel(g);
       const locLabel = g.exact ? "מיקום מדויק (COD)" : (g.cemeteryOnly ? "בית קברות בלבד" : "קבורה מאושרת");
@@ -580,8 +506,15 @@
         }
         const m = L.circleMarker([mLat, mLng], {
           radius, fillColor: color, color: "#fff", weight: 2, fillOpacity: g.exact ? 0.92 : 0.65,
-        }).addTo(map);
-        attachPopup(m, g);
+        }).addTo(map).bindPopup(popupHtml(g), { maxWidth: 320 });
+        m.on("popupopen", () => {
+          const el = m.getPopup().getElement();
+          if (el) {
+            L.DomEvent.disableClickPropagation(el);
+            L.DomEvent.disableScrollPropagation(el);
+            el.querySelectorAll("a").forEach((a) => L.DomEvent.disableClickPropagation(a));
+          }
+        });
         m.bringToFront();
         markers[g.id] = m;
         markerLayers.push({ m, g });
@@ -620,8 +553,6 @@
       g.lng + (g.offset ? g.offset[1] : 0),
     ]);
     map.fitBounds(allCoords, { padding: [40, 40], maxZoom: 16 });
-    requestAnimationFrame(() => map.invalidateSize());
-    window.addEventListener("resize", () => map.invalidateSize());
 
     L.marker([31.773, 35.243], { opacity: 0.85 })
       .addTo(map)
