@@ -54,6 +54,14 @@
     #map { flex: 1; min-height: 400px; }
     .leaflet-popup-content { font-size: 0.85rem; line-height: 1.5; max-width: 320px; }
     .popup-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+    .popup-profiles { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+    .profile-btn {
+      display: inline-block; font-size: 0.76rem; font-weight: 600; padding: 4px 10px;
+      border-radius: 4px; text-decoration: none; border: 1px solid transparent;
+    }
+    .profile-mh { background: #e8f4fc; color: #1a5276; border-color: #aed6f1; }
+    .profile-geni { background: #fef5e7; color: #7d6608; border-color: #f9e79f; }
+    .profile-btn:hover { opacity: 0.88; }
     .popup-link a, .popup-sources a { color: #2980b9; }
     .popup-sources { font-size: 0.78rem; margin-top: 8px; padding-top: 6px; border-top: 1px solid #eee; }
     .popup-sources strong { display: block; margin-bottom: 4px; font-size: 0.8rem; }
@@ -204,6 +212,63 @@
     const srcLink = (text, url) => ({ type: "link", text, url });
     const srcNote = (text) => ({ type: "note", text });
 
+    const MH_GEDCOM = {
+      "I11": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000011/%D7%91%D7%9F-%D7%A6%D7%99%D7%95%D7%9F-%D7%A9%D7%A4%D7%99%D7%A8%D7%90",
+      "I13": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000013/%D7%A9%D7%9E%D7%95%D7%90%D7%9C-%D7%94%D7%9C%D7%95%D7%99-%D7%A6%D7%95%D7%A7%D7%A8%D7%9E%D7%9F",
+      "I14": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000014/%D7%94%D7%93%D7%A1%D7%94-%D7%A9%D7%A7%D7%9C%D7%95%D7%95%D7%A8-%D7%90%D7%95-%D7%9E%D7%A9%D7%A7%D7%9C%D7%95%D7%91-(%D7%A0%D7%99%D7%A9%D7%95%D7%90%D7%99%D7%9F-%D7%A8%D7%90%D7%A9%D7%95%D7%A0%D7%99%D7%9D-%D7%9C%D7%97%D7%99%D7%99%D7%9D-%D7%91%D7%A8%D7%95%D7%9A-%D7%A9%D7%A8%D7%9C%D7%99%D7%9F)",
+      "I16": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000016/%D7%9E%D7%A9%D7%95%D7%9C%D7%9D-%D7%96%D7%9C%D7%9E%D7%9F-%D7%A9%D7%A4%D7%99%D7%A8%D7%90",
+      "I18": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000018/%D7%90%D7%A1%D7%AA%D7%A8-%D7%9C%D7%99%D7%91%D7%90-%D7%96%D7%A7%D7%94%D7%99%D7%99%D7%9D",
+      "I20": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000020/%D7%97%D7%99%D7%99%D7%9D-%D7%99%D7%A2%D7%A7%D7%91-%D7%A9%D7%A4%D7%99%D7%A8%D7%90",
+      "I79": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000079/%D7%A9%D7%9C%D7%9E%D7%95%D7%9F-%D7%A9%D7%A4%D7%99%D7%A8%D7%90",
+      "I82": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000082/%D7%A9%D7%A8%D7%94-%D7%A9%D7%A4%D7%99%D7%A8%D7%90",
+      "I124": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000124/%D7%9E%D7%A8%D7%99%D7%9D-%D7%9C%D7%A0%D7%90%D7%99%D7%99%D7%9C",
+      "I129": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000129/%D7%A9%D7%9E%D7%A2%D7%95%D7%9F-%D7%99%D7%A9%D7%A8%D7%90%D7%9C-%D7%99%D7%A2%D7%A7%D7%95%D7%91%D7%95%D7%91%D7%99%D7%A5",
+      "I500001": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1500001/%D7%99%D7%A2%D7%A7%D7%91-%D7%94%D7%9C%D7%95%D7%99-%D7%A6%D7%95%D7%A7%D7%A2%D7%A8%D7%9E%D7%9F",
+      "I500037": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1500037/%D7%92%D7%99%D7%98%D7%94-%D7%9E%D7%9C%D7%9B%D7%94-%D7%A9%D7%A4%D7%99%D7%A8%D7%90",
+      "I500038": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1500038/%D7%97%D7%A0%D7%94-%D7%91%D7%99%D7%99%D7%9C%D7%94-%D7%A6%D7%99%D7%A4%D7%95%D7%A8%D7%94-%D7%A9%D7%A4%D7%99%D7%A8%D7%90",
+      "I500042": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1500042/%D7%9E%D7%A8%D7%93%D7%9B%D7%99-%D7%93%D7%95%D7%93-%D7%9C%D7%95%D7%99%D7%9F",
+      "I500105": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1500105/%D7%99%D7%A6%D7%97%D7%A7-%D7%99%D7%A2%D7%A7%D7%91-%D7%99%D7%9C%D7%99%D7%9F",
+      "I500140": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1500140/%D7%90%D7%91%D7%A8%D7%94%D7%9D-%D7%99%D7%A6%D7%97%D7%A7-%D7%9C%D7%A0%D7%90%D7%99%D7%99%D7%9C",
+    };
+
+    const PROFILE_LINKS_BY_ID = {
+      "74463": { mh: MH_GEDCOM.I18 }, // אסתר ליבא זקהיים (@I18@)
+      "40371": { mh: MH_GEDCOM.I14 }, // הדסה שקלוור או משקלוב (נישואין ראשונים לחיים ברוך שרלין) (@I14@)
+      "40375": { mh: MH_GEDCOM.I13 }, // שמואל הלוי צוקרמן (@I13@)
+      "yaakov1887": { mh: MH_GEDCOM.I500001 }, // יעקב הלוי צוקערמן (@I500001@)
+      "aaron1904": { geni: "https://www.geni.com/people/%D7%A8%D7%91%D7%99-%D7%90%D7%94%D7%A8%D7%9F-%D7%9C%D7%A0%D7%90%D7%9C/6000000001133675244" },
+      "meshulam1903": { mh: MH_GEDCOM.I16, geni: "https://www.geni.com/people/R-Meshullam-Zalman-Shapira-of-Kalwarija/6000000002802710067" }, // משולם זלמן שפירא (@I16@)
+      "chaim1908": { mh: MH_GEDCOM.I20 }, // חיים  יעקב שפירא (@I20@)
+      "benzion": { mh: MH_GEDCOM.I11 }, // בן ציון שפירא (@I11@)
+      "avi": { mh: MH_GEDCOM.I500140 }, // אברהם יצחק לנאייל (@I500140@)
+      "sarah_lib": { mh: MH_GEDCOM.I82 }, // שרה שפירא (@I82@)
+      "gita": { mh: MH_GEDCOM.I500037 }, // גיטה מלכה שפירא (@I500037@)
+      "frank": { geni: "https://www.geni.com/people/R-Zvi-Pesach-Frank-Chief-Rabbi-of-Jerusalem/6000000002236384262" },
+      "levin_md": { mh: MH_GEDCOM.I500042 }, // מרדכי דוד לוין (@I500042@)
+      "yellin": { mh: MH_GEDCOM.I500105 }, // יצחק יעקב ילין (@I500105@)
+      "yaakovov": { mh: MH_GEDCOM.I129 }, // שמעון  ישראל יעקובוביץ (@I129@)
+      "tzipora": { mh: MH_GEDCOM.I500038, geni: "https://www.geni.com/people/Tzipora-Levin/6000000003097307639" }, // חנה ביילה ציפורה שפירא (@I500038@)
+      "aryeh": { geni: "https://www.geni.com/people/Rabbi-Aryeh-Levin/6000000004370135036" },
+    };
+
+    function srcGedcom(text) {
+      const m = text.match(/^GEDCOM\s+@(I\d+)@:?\s*(.*)$/);
+      if (m && MH_GEDCOM[m[1]]) {
+        const rest = m[2] ? `: ${m[2]}` : "";
+        return srcLink(`GEDCOM @${m[1]}@ — MyHeritage${rest}`, MH_GEDCOM[m[1]]);
+      }
+      return srcNote(text);
+    }
+
+    function profileBarHtml(g) {
+      const p = PROFILE_LINKS_BY_ID[g.id];
+      if (!p) return "";
+      let h = '<div class="popup-profiles">';
+      if (p.mh) h += `<a class="profile-btn profile-mh" href="${escapeHtml(p.mh)}" target="_blank" rel="noopener noreferrer">MyHeritage — פרופיל</a>`;
+      if (p.geni) h += `<a class="profile-btn profile-geni" href="${escapeHtml(p.geni)}" target="_blank" rel="noopener noreferrer">Geni — פרופיל</a>`;
+      h += "</div>";
+      return h;
+    }
     const SOURCE_BY_ID = {
       "83877": [
         srcLink("עיר דוד #83877 — מצבה: בת ר' בנימין, אשת ר' שמואל; נ' י\"ח חשון תרנ\"א; גוש ישן ט/11/39", COD("83877")),
@@ -211,16 +276,16 @@
       ],
       "74463": [
         srcLink("עיר דוד #74463 — אשת חיים יעקב שפירא; גוש אמצעי 2 · ב · שורה 19 · קבר 35", COD("74463")),
-        srcNote("GEDCOM @I18@: נולדה ~1832, נפטרה 7.11.1910; בת בן-ציון זקהיים"),
+        srcGedcom("GEDCOM @I18@: נולדה ~1832, נפטרה 7.11.1910; בת בן-ציון זקהיים"),
       ],
       "40371": [
         srcLink("עיר דוד #40371 — מצבה: בת ניסן שרלין, אשת שמואל הלוי; גוש הנביאים ח/9/18", COD("40371")),
-        srcNote("GEDCOM: מצבה מאושרת — לא אימות מגאלדא"),
+        srcLink("GEDCOM — MyHeritage: מצבה מאושרת — לא אימות מגאלדא", MH_GEDCOM.I14),
       ],
       "40375": [
         srcLink("עיר דוד #40375 — מצבה: מדפיס \"תורה מציון\"; גוש הנביאים ח/9/19", COD("40375")),
         srcLink("mountofolives.co.il #19662 — אותו קבר", "https://www.mountofolives.co.il/grave/19662/"),
-        srcNote("GEDCOM: עלה מפולין 1863"),
+        srcLink("GEDCOM — MyHeritage: עלה מפולין 1863", MH_GEDCOM.I13),
       ],
       "40379": [
         srcLink("עיר דוד #40379 — בן שמואל; מחבר \"אוצר חיים\"; גוש הנביאים ח/9/20", COD("40379")),
@@ -252,32 +317,37 @@
         srcLink("עיר דוד #48739 — בת אברהם מענדיל; נ' 1941", COD("48739")),
       ],
       "yaakov1887": [
-        srcNote("GEDCOM @I500001@: נפטר 2.11.1887 (ט\"ו חשון תרמ\"ח); עלה 1863 — ר' יאקיל"),
+        srcGedcom("GEDCOM @I500001@: נפטר 2.11.1887 (ט\"ו חשון תרמ\"ח); עלה 1863 — ר' יאקיל"),
+        srcLink("ויקיפדיה (שמואל) — אב: ר' יעקב ממזריטש; עלו הוריו 1863", "https://he.wikipedia.org/wiki/%D7%A9%D7%9E%D7%95%D7%90%D7%9C_%D7%A6%D7%95%D7%A7%D7%A8%D7%9E%D7%9F"),
+        srcLink("מונטיפiore — רשומה #2182 (1866): Yaakov מ-Miedzyrzec, עלייה 1862", "https://www.montefioreendowment.org.uk/census-search/?family_id=2182&census_year=1866"),
+        srcLink("מונטיפiore — חיפוש מפקד (פתיחת טופס)", "https://www.montefioreendowment.org.uk/census-search/"),
+        srcLink("מונטיפiore — PDF מקור (11900035), שורת סריקה 10", "https://www.montefioreendowment.org.uk/wp-content/uploads/scans/11900035.pdf"),
+        srcNote("מפקד 1866: Given name=Yaakov · Residence=Jerusalem · Kolel=Varsha · Census year=1866 → משפחה #2182 → בעמודה Scan Line לחץ 10 → ב-PDF שורה 10 בכתב יד. תמלול באתר: Yaakov 50, Mezritsh, אשה Glike, בת Haya — אין שם משפחה; מועמד לאבי שמואל (יוקל)."),
         srcNote("Helkat Mehokek (1740–1906): בטווח התאריך — לא נמצא במאגר הדיגיטלי"),
         srcLink("עיר דוד #32832 — יעקב צוקרמן אחר, נ' 1914 (לא הוא)", COD("32832")),
         srcLink("עיר דוד #32839 — יעקב צוקרמן אחר, נ' 1914 (לא הוא)", COD("32839")),
       ],
       "aaron1904": [
-        srcLink("Geni — נולד 1862 ווארשה, עלה 1877, נפטר 25.12.1904; בן צבי הירש", "https://www.geni.com/people/%D7%A8%D7%91%D7%99-%D7%90%D7%94%D7%A8%D7%9F-%D7%9C%D7%A0%D7%90%D7%9C/6000000001133675244"),
+        srcNote("Geni: נולד 1862 ווארשה, עלה 1877, נפטר 25.12.1904; בן צבי הירש"),
         srcNote("Helkat Mehokek: נפטר 1904 — בטווח; לא במאגר דיגיטלי"),
         srcNote("עיר דוד ln=לנאל ss=ורשה: לא נמצא — ייתכן גוש ורשה (כמו בן פייבל)"),
       ],
       "meshulam1903": [
         srcLink("המכלול (חיים יעקב) — בנו; נפטר י\"ד כסלו תרס\"ד (1903)", "https://www.hamichlol.org.il/%D7%A8%D7%91%D7%99_%D7%97%D7%99%D7%99%D7%9D_%D7%99%D7%A2%D7%A7%D7%91_%D7%A9%D7%A4%D7%99%D7%A8%D7%90"),
-        srcNote("GEDCOM: סב-סבא; אשתו חנה רייזל ראשגולין (מוזכרת במכלול)"),
+        srcLink("GEDCOM — MyHeritage: סב-סבא; אשתו חנה רייזל ראשגולין (מוזכרת במכלול)", MH_GEDCOM.I16),
         srcNote("Helkat Mehokek + COD ss=פרושים: לא נמצא"),
       ],
       "chaim1908": [
         srcLink("המכלול — אב\"ד; נולד 1832 ליטא, נפטר כ\"א סיון תרס\"ח", "https://www.hamichlol.org.il/%D7%A8%D7%91%D7%99_%D7%97%D7%99%D7%99%D7%9D_%D7%99%D7%A2%D7%A7%D7%91_%D7%A9%D7%A4%D7%99%D7%A8%D7%90"),
         srcLink("Wikimedia — מצבה: כ\"א סיון תרס\"ח; בן יצחק מנחם זונדל", "https://commons.wikimedia.org/wiki/File:Grave_of_Chaim_Yaakov_Shapira.JPG"),
-        srcNote("GEDCOM @I20@: קבור חלקת הפרושים — ללא גוש ב-COD"),
+        srcGedcom("GEDCOM @I20@: קבור חלקת הפרושים — ללא גוש ב-COD"),
         srcNote("Helkat Mehokek: בטווח; להביא תמונה למשרד 02-6275050"),
         srcLink("עיר דוד #74463 — אשתו אסתר ליבא, שורה 19 (סביר באותו אזור)", COD("74463")),
       ],
       "benzion": [
         srcLink("ויקיפדיה — נציג לקונגרס ציוני; נפטר 1972", "https://he.wikipedia.org/wiki/%D7%91%D7%9F_%D7%A6%D7%99%D7%95%D7%9F_%D7%A9%D7%A4%D7%99%D7%A8%D7%90"),
         srcLink("המכלול (חיים יעקב) — נכד; בן משולם זלמן", "https://www.hamichlol.org.il/%D7%A8%D7%91%D7%99_%D7%97%D7%99%D7%99%D7%9D_%D7%99%D7%A2%D7%A7%D7%91_%D7%A9%D7%A4%D7%99%D7%A8%D7%90"),
-        srcNote("GEDCOM @I11@: נולד 1890; קבור הר המנוחות — חלקה לא ידועה"),
+        srcGedcom("GEDCOM @I11@: נולד 1890; קבור הר המנוחות — חלקה לא ידועה"),
       ],
       "avi": [
         srcLink("ויקיפדיה — דיין; בג\"ד; נפטר 3.2.2013", "https://he.wikipedia.org/wiki/%D7%90%D7%91%D7%A8%D7%94%D7%9D_%D7%99%D7%A6%D7%97%D7%A7_%D7%9C%D7%A0%D7%90%D7%9C"),
@@ -285,30 +355,30 @@
         srcLink("כאיל תערג — ספר זיכרון עליו; עמ' 6–7: אמו בתיה שולנסקי", "https://www.hebrewbooks.org/56578"),
       ],
       "sarah_lib": [
-        srcNote("GEDCOM @I82@: נ' 1918, נפטרה 2008 פ\"ת; הר המנוחות"),
+        srcGedcom("GEDCOM @I82@: נ' 1918, נפטרה 2008 פ\"ת; הר המנוחות"),
       ],
       "gita": [
-        srcLink("המכלול (פרנק) — עלתה עם חיים יעקב 1891; נישאה לפרנק תרנ\"ה", "https://www.hamichlol.org.il/%D7%A6%D7%91%D7%99_%D7%A4%D7%A1%D7%97_%D7%9E%D7%99%D7%99%D7%A1_%D7%A4%D7%A8%D7%A0%D7%A7"),
-        srcNote("GEDCOM: קבורה ליד בעלה"),
+        srcLink("המכלול (פרנק) — עלתה עם חיים יעקב 1891; נישאה לפרנק תרנ\"ה", "https://www.hamichlol.org.il/%D7%A6%D7%91%D7%99_%D7%A4%D7%A1%D7%97_%D7%A4%D7%A8%D7%A0%D7%A7"),
+        srcLink("GEDCOM — MyHeritage: קבורה ליד בעלה", MH_GEDCOM.I500037),
       ],
       "frank": [
-        srcLink("ויקיפדיה — רבה הראשי; נפטר תשכ\"א", "https://he.wikipedia.org/wiki/%D7%A6%D7%91%D7%99_%D7%A4%D7%A1%D7%97_%D7%9E%D7%99%D7%99%D7%A1_%D7%A4%D7%A8%D7%A0%D7%A7"),
-        srcLink("המכלול — נשוי לגיטה מלכה שפירא", "https://www.hamichlol.org.il/%D7%A6%D7%91%D7%99_%D7%A4%D7%A1%D7%97_%D7%9E%D7%99%D7%99%D7%A1_%D7%A4%D7%A8%D7%A0%D7%A7"),
+        srcLink("ויקיפדיה — רבה הראשי; נפטר תשכ\"א", "https://he.wikipedia.org/wiki/%D7%A6%D7%91%D7%99_%D7%A4%D7%A1%D7%97_%D7%A4%D7%A8%D7%A0%D7%A7"),
+        srcLink("המכלול — נשוי לגיטה מלכה שפירא", "https://www.hamichlol.org.il/%D7%A6%D7%91%D7%99_%D7%A4%D7%A1%D7%97_%D7%A4%D7%A8%D7%A0%D7%A7"),
       ],
       "levin_md": [
         srcLink("המכלול — ראש ישיבת עץ חיים; חלקת הרבנים", "https://www.hamichlol.org.il/%D7%A8%D7%91%D7%99_%D7%9E%D7%A8%D7%93%D7%9B%D7%99_%D7%93%D7%95%D7%93_%D7%9C%D7%95%D7%99%D7%9F"),
-        srcNote("GEDCOM @I500042@: נפטר 18.1.1967"),
+        srcGedcom("GEDCOM @I500042@: נפטר 18.1.1967"),
       ],
       "yellin": [
         srcLink("ויקיפדיה — חלוץ עיתונות; נפטר 1964", "https://he.wikipedia.org/wiki/%D7%99%D7%A6%D7%97%D7%A7_%D7%99%D7%A2%D7%A7%D7%91_%D7%99%D7%9C%D7%99%D7%9F"),
-        srcNote("GEDCOM: קבור הר המנוחות"),
+        srcLink("GEDCOM — MyHeritage: קבור הר המנוחות", MH_GEDCOM.I500105),
       ],
       "yaakovov": [
-        srcNote("GEDCOM @I129@: נפטר 5.3.1953; הר המנוחות"),
+        srcGedcom("GEDCOM @I129@: נפטר 5.3.1953; הר המנוחות"),
       ],
       "tzipora": [
         srcLink("ויקיפדיה (אריה לוין) — נפטרה כ\"ו אדר תשי\"ב; קבורה סנהדריה לידו", "https://he.wikipedia.org/wiki/%D7%90%D7%A8%D7%99%D7%94_%D7%9C%D7%95%D7%99%D7%9F"),
-        srcNote("GEDCOM: בת דוד שפירא"),
+        srcLink("GEDCOM — MyHeritage: בת דוד שפירא", MH_GEDCOM.I500038),
       ],
       "aryeh": [
         srcLink("ויקיפדיה — \"אב האסירים\"; נפטר 1969", "https://he.wikipedia.org/wiki/%D7%90%D7%A8%D7%99%D7%94_%D7%9C%D7%95%D7%99%D7%9F"),
@@ -373,6 +443,7 @@
       const typeLabel = kindLabel(g);
       const locLabel = g.exact ? "מיקום מדויק (COD)" : (g.cemeteryOnly ? "בית קברות בלבד" : "קבורה מאושרת");
       let html = `<div class="popup-name">${g.name}</div>`;
+      html += profileBarHtml(g);
       html += `<strong>קרבה:</strong> ${relationLabel(g)}<br>`;
       html += `<strong>קו:</strong> ${g.line}<br>`;
       html += `<strong>סוג:</strong> ${typeLabel}<br>`;
