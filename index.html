@@ -8,7 +8,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { height: 100%; }
-    html, body { width: 100%; overflow: hidden; }
+    html, body { width: 100%; margin: 0; padding: 0; overflow: hidden; }
     body {
       font-family: "Segoe UI", Tahoma, Arial, sans-serif; background: #f4f2ee; color: #1a1a1a;
       display: flex; flex-direction: column; height: 100%; min-height: 100vh; min-height: 100dvh;
@@ -35,23 +35,27 @@
     }
     #layout {
       flex: 1; min-height: 0; width: 100%;
+      direction: ltr; /* map left, sidebar right — avoid RTL grid quirks */
       display: grid;
-      grid-template-columns: min(340px, 36vw) minmax(0, 1fr);
-      grid-template-areas: "sidebar map";
+      grid-template-columns: minmax(0, 1fr) 320px;
+      grid-template-areas: "map sidebar";
       overflow: hidden;
     }
     #sidebar {
       grid-area: sidebar;
-      min-width: 0; width: 100%;
+      direction: rtl;
+      text-align: right;
+      min-width: 0; max-width: 320px; width: 100%;
       overflow-x: hidden; overflow-y: auto; background: #fff;
-      border-inline-start: 1px solid #ddd; padding: 10px 14px;
-      scrollbar-gutter: stable;
+      border-left: 1px solid #ddd;
+      padding: 10px 18px 10px 12px;
+      box-sizing: border-box;
     }
-    #sidebar h2 { font-size: 0.9rem; margin: 8px 0 6px; color: #555; }
+    #sidebar h2 { font-size: 0.9rem; margin: 8px 0 6px; color: #555; padding-inline: 2px; }
     .grave-item {
       padding: 8px 10px; margin-bottom: 6px; border-radius: 6px; cursor: pointer;
       border: 1px solid #e8e8e8; font-size: 0.82rem; line-height: 1.45;
-      overflow-wrap: anywhere; word-break: break-word;
+      overflow-wrap: anywhere; word-break: break-word; max-width: 100%;
     }
     .grave-item:hover { background: #f9f7f3; border-color: #ccc; }
     .grave-item.active { background: #eef4fb; border-color: #2980b9; }
@@ -98,7 +102,7 @@
         grid-template-areas: "map" "sidebar";
         height: auto;
       }
-      #sidebar { max-height: 40vh; border-inline-start: none; border-top: 1px solid #ddd; }
+      #sidebar { max-width: none; max-height: 40vh; border-left: none; border-top: 1px solid #ddd; padding: 10px 16px; }
       #map { height: 55vh; min-height: 55vh; }
     }
   </style>
