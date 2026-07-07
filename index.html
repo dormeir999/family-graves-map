@@ -119,6 +119,9 @@
     <label>משפחה
       <select id="filter-line"><option value="">הכל</option></select>
     </label>
+    <label>דורות
+      <select id="filter-gen"><option value="">הכל</option></select>
+    </label>
     <button type="button" id="btn-israel">מרכז ישראל</button>
     <button type="button" id="btn-world">הכל — זום עולמי</button>
   </div>
@@ -580,6 +583,7 @@
     const sectionEls = [];
     let filterCountry = "";
     let filterLine = "";
+    let filterGen = "";
 
     function countryOrder(code) {
       if (code === "IL") return 0;
@@ -604,6 +608,10 @@
     function passesFilter(g) {
       if (filterCountry && g.countryCode !== filterCountry) return false;
       if (filterLine && g.line !== filterLine) return false;
+      if (filterGen) {
+        const gen = typeof g.ancestorGen === "number" ? String(g.ancestorGen) : "";
+        if (gen !== filterGen) return false;
+      }
       return true;
     }
 
@@ -715,6 +723,7 @@
 
     const countrySelect = document.getElementById("filter-country");
     const lineSelect = document.getElementById("filter-line");
+    const genSelect = document.getElementById("filter-gen");
     [...new Set(GRAVES.map(g => g.countryCode).filter(Boolean))]
       .sort((a, b) => countryOrder(a) - countryOrder(b))
       .forEach(code => {
@@ -730,16 +739,27 @@
       opt.textContent = line;
       lineSelect.appendChild(opt);
     });
+    [...new Set(GRAVES.map(g => g.ancestorGen).filter(x => typeof x === "number"))]
+      .sort((a, b) => a - b)
+      .forEach(gen => {
+        const opt = document.createElement("option");
+        opt.value = String(gen);
+        opt.textContent = String(gen);
+        genSelect.appendChild(opt);
+      });
     countrySelect.addEventListener("change", () => { filterCountry = countrySelect.value; applyFilters(); });
     lineSelect.addEventListener("change", () => { filterLine = lineSelect.value; applyFilters(); });
+    genSelect.addEventListener("change", () => { filterGen = genSelect.value; applyFilters(); });
     document.getElementById("btn-israel").addEventListener("click", () => {
       map.fitBounds([[31.76, 35.20], [31.80, 35.26]], { padding: [30, 30], maxZoom: 16 });
     });
     document.getElementById("btn-world").addEventListener("click", () => {
       filterCountry = "";
       filterLine = "";
+      filterGen = "";
       countrySelect.value = "";
       lineSelect.value = "";
+      genSelect.value = "";
       applyFilters();
     });
 
