@@ -70,6 +70,25 @@
     .popup-sources .src-note { color: #444; }
     .popup-sources a { pointer-events: auto; cursor: pointer; }
     .popup-accuracy { font-size: 0.78rem; color: #555; margin-top: 6px; padding-top: 6px; border-top: 1px solid #eee; }
+    .map-toolbar {
+      display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center;
+      padding: 8px 20px; background: #fff; border-bottom: 1px solid #ddd; font-size: 0.82rem;
+    }
+    .map-toolbar label { display: flex; align-items: center; gap: 6px; color: #444; }
+    .map-toolbar select {
+      font: inherit; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; background: #fff;
+    }
+    .map-toolbar button {
+      font: inherit; padding: 5px 12px; border-radius: 4px; border: 1px solid #2980b9;
+      background: #eaf2f8; color: #1a5276; cursor: pointer;
+    }
+    .map-toolbar button:hover { background: #d6eaf8; }
+    .tag-country { background: #eef9ff; color: #1a5276; }
+    .edge-links { font-size: 0.76rem; margin-top: 6px; line-height: 1.5; }
+    .edge-links a { color: #2980b9; cursor: pointer; text-decoration: none; border-bottom: 1px dotted #2980b9; }
+    .edge-links a:hover { color: #1a5276; }
+    .edge-links .edge-off { opacity: 0.85; }
+    .grave-item.hidden, .grave-section.hidden { display: none !important; }
     @media (max-width: 768px) {
       #layout { flex-direction: column-reverse; height: auto; }
       #sidebar { width: 100%; max-height: 40vh; border-left: none; border-top: 1px solid #ddd; }
@@ -93,6 +112,16 @@
       <span><i class="dot dot-cemetery"></i> שער בית קברות בלבד</span>
     </div>
   </header>
+  <div class="map-toolbar">
+    <label>מדינה
+      <select id="filter-country"><option value="">הכל</option></select>
+    </label>
+    <label>משפחה
+      <select id="filter-line"><option value="">הכל</option></select>
+    </label>
+    <button type="button" id="btn-israel">מרכז ישראל</button>
+    <button type="button" id="btn-world">הכל — זום עולמי</button>
+  </div>
   <div id="layout">
     <div id="sidebar"></div>
     <div id="map"></div>
@@ -101,113 +130,70 @@
   <script>
     // ancestorGen = steps up the blood line only (Dor=0, parents=1, Salmon/Miriam=2…).
     // kind: ancestor | collateral | inlaw — collateral shares a tier but is NOT an ancestor.
-    const GRAVES = [
-      // ── הר הזיתים — מיקום מדויק ──
-      { id: "83877", name: "גאלדא צוקרמאן", kind: "inlaw", role: "נישואין · אשת שמואל", line: "צוקרמן", exact: true,
-        death: "1890", cemetery: "הר הזיתים", plot: "ישן · ט · שורה 11 · קבר 39",
-        lat: 31.777019, lng: 35.241973,
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=83877" },
-      { id: "74463", name: "אסתר ליבא שפירא", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא (אשת חיים יעקב)", line: "שפירא", exact: true,
-        death: "1910", cemetery: "הר הזיתים", plot: "אמצעי 2 · ב · שורה 19 · קבר 35",
-        lat: 31.774603, lng: 35.242187,
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=74463" },
-      { id: "40371", name: "הדסה צוקרמן (שרלין)", kind: "ancestor", ancestorGen: 4, role: "סבת-סבא", line: "צוקרמן", exact: true,
-        death: "1938", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 18",
-        lat: 31.776742, lng: 35.242113, spread: [-0.000035, -0.000025],
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40371" },
-      { id: "40375", name: "שמואל הלוי צוקרמן", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא", line: "צוקרמן", exact: true,
-        death: "1929", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 19",
-        lat: 31.776748, lng: 35.242115, spread: [-0.000012, 0.000008],
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40375" },
-      { id: "40379", name: "חיים יעקב צוקרמן", kind: "collateral", role: "דוד (בן שמואל — לא בקו ישיר)", line: "צוקרמן", exact: true,
-        death: "1971", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 20",
-        lat: 31.776755, lng: 35.242119, spread: [0.000012, 0.000012],
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40379" },
-      { id: "40383", name: "ברכה רבקה צוקרמן", kind: "inlaw", role: "אשת דוד (חיים יעקב)", line: "צוקרמן", exact: true,
-        death: "1987", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 21",
-        lat: 31.776761, lng: 35.242121, spread: [0.000035, 0.000025],
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40383" },
-      { id: "24815", name: "אהרן צבי לנאייל", kind: "collateral", role: "קו לנאל (בן פייבל)", line: "לנאל", exact: true,
-        death: "1939", cemetery: "הר הזיתים", plot: "ורשה · ורשה ב · שורה 13 · קבר 1",
-        lat: 31.773158, lng: 35.245339,
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=24815" },
+// BEGIN MAP_DATA
+    const MAP_DATA = {
+      graves: [
+      { id: "83877", ftId: "FT044", name: "גאלדא צוקרמאן", kind: "inlaw", role: "נישואין · אשת שמואל (ראשונה — לא אם ביילא)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1890", cemetery: "הר הזיתים", plot: "ישן · ט · שורה 11 · קבר 39", lat: 31.777019, lng: 35.241973, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=83877" },
+      { id: "74463", ftId: "FT033", name: "אסתר ליבא שפירא", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא (אשת חיים יעקב)", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1910", cemetery: "הר הזיתים", plot: "אמצעי 2 · ב · שורה 19 · קבר 35", lat: 31.774603, lng: 35.242187, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=74463" },
+      { id: "40371", ftId: "FT050", geniId: "6000000002683091075", name: "הדסה צוקרמן (שרלין)", kind: "ancestor", ancestorGen: 4, role: "סבת-סבא (אם ביילא גולדא · אם שלמון)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1938", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 18", lat: 31.776742, lng: 35.242113, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40371", spread: [-3.5e-05, -2.5e-05] },
+      { id: "40375", ftId: "FT040", name: "שמואל הלוי צוקרמן", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (אבי ביילא גולדא · צד אמא)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1929", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 19", lat: 31.776748, lng: 35.242115, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40375", spread: [-1.2e-05, 8e-06] },
+      { id: "40379", ftId: "FT043", name: "חיים יעקב צוקרמן", kind: "collateral", role: "דוד (בן שמואל — לא בקו ישיר)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1971", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 20", lat: 31.776755, lng: 35.242119, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40379", spread: [1.2e-05, 1.2e-05] },
+      { id: "40383", ftId: "FT044", name: "ברכה רבקה צוקרמן", kind: "inlaw", role: "אשת דוד (חיים יעקב)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1987", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 21", lat: 31.776761, lng: 35.242121, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40383", spread: [3.5e-05, 2.5e-05] },
+      { id: "24815", ftId: "FT025", name: "אהרן צבי לנאייל", kind: "collateral", role: "אח של סבתא מרים (בן פייבל)", line: "לנאל", country: "ישראל", countryCode: "IL", death: "1939", cemetery: "הר הזיתים", plot: "ורשה · ורשה ב · שורה 13 · קבר 1", lat: 31.773158, lng: 35.245339, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=24815" },
+      { id: "63478", ftId: "FT062", name: "הלל שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין · שקלוב)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1895", cemetery: "הר הזיתים", plot: "ישן · ib · שורה 14 · קבר 1", lat: 31.77663, lng: 35.241441, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=63478" },
+      { id: "70477", name: "אסתר פארדיל שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1916", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.774316, lng: 35.242117, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=70477" },
+      { id: "48291", name: "זלטא שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1934", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.773109, lng: 35.244157, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48291" },
+      { id: "44606", name: "חנה (יחנע) שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1936", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.773099, lng: 35.24465, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=44606" },
+      { id: "48290", name: "אברהם בנציון שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1939", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.773113, lng: 35.244163, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48290" },
+      { id: "48739", name: "טובא גינענדל שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1941", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.772888, lng: 35.244723, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48739" },
+      { id: "yaakov1887", ftId: "FT041", name: "יעקב הלוי צוקרמן", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא (אבי שמואל · צד אמא) · הקבר הישן ביותר", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1887", cemetery: "הר הזיתים", plot: "לא במאגר — שאל במשרד (02-6275050)", lat: 31.773, lng: 35.243, exact: false, offset: [0.0008, 0.0012] },
+      { id: "aaron1904", ftId: "FT021", geniId: "6000000001133675244", name: "רבי אהרן לנאל", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (צד סבתא · אבי שרגא פייבל)", line: "לנאל", country: "ישראל", countryCode: "IL", death: "1904", cemetery: "הר הזיתים", plot: "לא במאגר — שאל במשרד", lat: 31.773, lng: 35.243, exact: false, offset: [0.0004, 0.0006] },
+      { id: "meshulam1903", ftId: "FT030", name: "משולם זלמן שפירא", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (צד שפירא)", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1903", cemetery: "הר הזיתים", plot: "חלקת פרושים — לא במאגר", lat: 31.773, lng: 35.243, exact: false, offset: [0.0, 0.0003] },
+      { id: "chaim1908", ftId: "FT031", name: "רבי חיים יעקב שפירא", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא · בעלה של אסתר ליבא", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1908", cemetery: "הר הזיתים", plot: "סביר ליד אסתר (שורה 19) — לא במאגר · הערכה ~±30 מ'", lat: 31.774603, lng: 35.242187, exact: false, offset: [0.00015, 0.0002] },
+      { id: "benzion", ftId: "FT010", name: "בן ציון שפירא", kind: "ancestor", ancestorGen: 3, role: "סבא-רבא", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1972", cemetery: "הר המנוחות", plot: "חלקה לא ידועה", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [0.0003, 0.0005] },
+      { id: "avi", ftId: "FT026", name: "אברהם יצחק לנאל", kind: "collateral", role: "אח של סבתא מרים", line: "לנאל", country: "ישראל", countryCode: "IL", death: "2013", cemetery: "הר המנוחות", plot: "סביר חלקת הרבנים", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [0.0005, 0.0] },
+      { id: "sarah_lib", name: "שרה שפירא-ליברמן", kind: "collateral", role: "אחות סבא שלמון", line: "שפירא", country: "ישראל", countryCode: "IL", death: "2008", cemetery: "הר המנוחות", plot: "חלקה לא ידועה", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [-0.0003, 0.0001] },
+      { id: "gita", name: "גיטה מלכה שפירא (פרנק)", kind: "collateral", role: "בת-דודה של סבא-רבא (בן ציון)", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1960", cemetery: "הר המנוחות", plot: "ליד בעלה הרב צבי פסח פרנק", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [0.0002, -0.0003] },
+      { id: "frank", name: "הרב צבי פסח פרנק", kind: "inlaw", role: "בעל גיטה מלכה", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1960", cemetery: "הר המנוחות", plot: "קבר מפורסם", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [0.0004, -0.0002] },
+      { id: "levin_md", name: "מרדכי דוד לוין", kind: "inlaw", role: "חתן משפחת שפירא", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1967", cemetery: "הר המנוחות", plot: "חלקת הרבנים", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [-0.0002, -0.0004] },
+      { id: "yellin", name: "יצחק יעקב ילין", kind: "inlaw", role: "בעל לאה מרים שפירא", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1964", cemetery: "הר המנוחות", plot: "חלקה לא ידועה", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [-0.0004, 0.0003] },
+      { id: "yaakovov", name: "שמעון ישראל יעקובוביץ", kind: "inlaw", role: "בעל דודה (שרה)", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1953", cemetery: "הר המנוחות", plot: "חלקה לא ידועה", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [-0.0005, 0.0001] },
+      { id: "tzipora", name: "צפורה חנה שפירא (לוין)", kind: "collateral", role: "בת-דודה של סבא-רבא (בן ציון)", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1952", cemetery: "בית הקברות סנהדריה", plot: "ליד בעלה הרב אריה לוין", lat: 31.7942, lng: 35.2268, exact: false, cemeteryOnly: true, offset: [0.0002, 0.0001] },
+      { id: "aryeh", name: "הרב אריה לוין", kind: "inlaw", role: "בעל צפורה חנה", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1969", cemetery: "בית הקברות סנהדריה", plot: "קבר מפורסם", lat: 31.7942, lng: 35.2268, exact: false, cemeteryOnly: true, offset: [0.0, 0.0] },
+      { id: "FT070", ftId: "FT070", geniId: "6000000178917217904", name: "ר' נחום שרלין", kind: "ancestor", ancestorGen: 6, role: "gggg-grandfather", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1871", cemetery: "Jerusalem", plot: "מיקום Geni (עיר)", lat: 31.768319, lng: 35.21371, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/6000000178917217904" },
+      { id: "FT060", ftId: "FT060", geniId: "6000000002180947497", name: "רבי ניסן נתן שרלין", kind: "ancestor", ancestorGen: 5, role: "ggg-grandfather", line: "שרלין", country: "בלארוס", countryCode: "BY", death: "1873", cemetery: "Mogilev", plot: "מיקום Geni (עיר)", lat: 53.8980663, lng: 30.3325337, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/6000000002180947497" },
+      { id: "FT080", ftId: "FT080", geniId: "4157971353870051066", name: "ר' יהושע צייטלין", kind: "ancestor", ancestorGen: 7, role: "gggg-grandfather", line: "צייטלין", country: "אוקראינה", countryCode: "UA", cemetery: "Kherson", plot: "מיקום Geni (עיר)", lat: 46.630001, lng: 32.599998, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/4157971353870051066" },
+      { id: "FT063", ftId: "FT063", name: "ירמיהו שרלין", kind: "collateral", ancestorGen: 6, role: "אב הלל (משקלוב) — לא במאגר COD", line: "שרלין", country: "ישראל", countryCode: "IL", cemetery: "הר הזיתים", plot: "סביר ליד הלל (ישן ib/14) — לא במאגר", lat: 31.77663, lng: 35.24144, exact: false, cemeteryOnly: false, locationSource: "manual", offset: [0.00025, 0.00035] },
+      { id: "FT067", ftId: "FT067", geniId: "6000000002802703085", name: "יצחק מנחם זונדל שפירא", kind: "ancestor", ancestorGen: 6, role: "אב חיים יעקב · אב\"ד איליה (מאיליה ליד וילנה)", line: "שפירא", country: "בלארוס", countryCode: "BY", death: "1845", cemetery: "איליה (Ilia)", plot: "קבורה באיליה — Geni GPS", lat: 54.4168102, lng: 27.2930165, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/6000000002802703085" },
+      { id: "seed_kalvarija_shapira", name: "קלוואריה — מוצא משפחת שפירא", kind: "collateral", ancestorGen: 4, role: "מקום לידת משולם זלמן — לא קבר", line: "שפירא", country: "ליטא", countryCode: "LT", cemetery: "קלוואריה (Kalvarija)", plot: "מיקום עיר בלבד — מוצא משפחתי", lat: 54.4156509, lng: 23.2236949, exact: false, cemeteryOnly: false, locationSource: "geni_city" },
+      { id: "seed_mezritsh_zukerman", name: "מזריטש — מוצא משפחת צוקרמן", kind: "collateral", ancestorGen: 5, role: "מקום לידת יעקב ושמואל — לא קבר", line: "צוקרמן", country: "פולין", countryCode: "PL", cemetery: "מזריטש (Miedzyrzec)", plot: "מיקום עיר בלבד — מוצא משפחתי", lat: 51.9864, lng: 22.5908, exact: false, cemeteryOnly: false, locationSource: "geni_city" },
+      ],
+      edges: {
+  "24815": [{ rel: "parent", geniId: "", graveId: null, name: "שרגא פייבל לנאייל", onMap: false }],
+  "40371": [{ rel: "parent", geniId: "6000000002180947497", graveId: "FT060", name: "רבי ניסן נתן שרלין", onMap: true }, { rel: "spouse", geniId: "", graveId: "40375", name: "שמואל הלוי צוקרמן", onMap: true }],
+  "40375": [{ rel: "parent", geniId: "", graveId: "yaakov1887", name: "יעקב הלוי צוקרמן", onMap: true }, { rel: "spouse", geniId: "6000000002683091075", graveId: "40371", name: "הדסה צוקרמן (שרלין)", onMap: true }, { rel: "child", geniId: "6000000014576764443", graveId: null, name: "ביילא גולדא צוקרמן", onMap: false, geniUrl: "https://www.geni.com/people/-/6000000014576764443" }, { rel: "child", geniId: "", graveId: "40379", name: "חיים יעקב צוקרמן", onMap: true }],
+  "40379": [{ rel: "parent", geniId: "", graveId: "40375", name: "שמואל הלוי צוקרמן", onMap: true }],
+  "40383": [{ rel: "spouse", geniId: "", graveId: "40375", name: "שמואל הלוי צוקרמן", onMap: true }],
+  "63478": [{ rel: "parent", geniId: "", graveId: "FT063", name: "ירמיהו שרלין", onMap: true }],
+  "74463": [{ rel: "parent", geniId: "", graveId: null, name: "בן ציון זקהיים", onMap: false }, { rel: "spouse", geniId: "", graveId: "chaim1908", name: "רבי חיים יעקב שפירא", onMap: true }],
+  "83877": [{ rel: "spouse", geniId: "", graveId: "40375", name: "שמואל הלוי צוקרמן", onMap: true }],
+  "FT060": [{ rel: "parent", geniId: "6000000178917217904", graveId: "FT070", name: "ר' נחום שרלין", onMap: true }, { rel: "spouse", geniId: "6000000178918544833", graveId: null, name: "חוה גיטל שרלין", onMap: false, geniUrl: "https://www.geni.com/people/-/6000000178918544833" }, { rel: "child", geniId: "6000000002683091075", graveId: "40371", name: "הדסה צוקרמן (שרלין)", onMap: true }],
+  "FT063": [{ rel: "child", geniId: "", graveId: "63478", name: "הלל שרלין", onMap: true }],
+  "FT067": [{ rel: "child", geniId: "", graveId: "chaim1908", name: "רבי חיים יעקב שפירא", onMap: true }],
+  "FT070": [{ rel: "parent", geniId: "6000000002181141069", graveId: null, name: "ניסן שרלין", onMap: false, geniUrl: "https://www.geni.com/people/-/6000000002181141069" }, { rel: "spouse", geniId: "6000000178917167842", graveId: null, name: "רבקה שרלין", onMap: false, geniUrl: "https://www.geni.com/people/-/6000000178917167842" }, { rel: "child", geniId: "6000000002180947497", graveId: "FT060", name: "רבי ניסן נתן שרלין", onMap: true }],
+  "aaron1904": [{ rel: "parent", geniId: "", graveId: null, name: "צבי הירש לנאל", onMap: false }, { rel: "child", geniId: "", graveId: null, name: "שרגא פייבל לנאייל", onMap: false }],
+  "avi": [{ rel: "parent", geniId: "", graveId: null, name: "שרגא פייבל לנאייל", onMap: false }],
+  "benzion": [{ rel: "parent", geniId: "", graveId: "meshulam1903", name: "משולם זלמן שפירא", onMap: true }, { rel: "spouse", geniId: "6000000014576764443", graveId: null, name: "ביילא גולדא צוקרמן", onMap: false, geniUrl: "https://www.geni.com/people/-/6000000014576764443" }],
+  "chaim1908": [{ rel: "spouse", geniId: "", graveId: "74463", name: "אסתר ליבא שפירא", onMap: true }, { rel: "child", geniId: "", graveId: "meshulam1903", name: "משולם זלמן שפירא", onMap: true }, { rel: "child", geniId: "", graveId: null, name: "דוד שפירא", onMap: false }, { rel: "parent", geniId: "6000000002802703085", graveId: "FT067", name: "יצחק מנחם זונדל שפירא", onMap: true }],
+  "meshulam1903": [{ rel: "parent", geniId: "", graveId: "chaim1908", name: "רבי חיים יעקב שפירא", onMap: true }, { rel: "spouse", geniId: "", graveId: null, name: "חנה רייזל ראשגולין", onMap: false }, { rel: "child", geniId: "", graveId: "benzion", name: "בן ציון שפירא", onMap: true }],
+  "yaakov1887": [{ rel: "child", geniId: "", graveId: "40375", name: "שמואל הלוי צוקרמן", onMap: true }],
+},
+    };
+    const GRAVES = MAP_DATA.graves;
+    const EDGES_BY_ID = MAP_DATA.edges || {};
+    // END MAP_DATA
 
-      // ── שרלין (in-law, דרך הדסה) ──
-      { id: "63478", name: "הלל שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין · שקלוב)", line: "שרלין", exact: true,
-        death: "1895", cemetery: "הר הזיתים", plot: "ישן · ib · שורה 14 · קבר 1",
-        lat: 31.776630, lng: 35.241441,
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=63478" },
-      { id: "70477", name: "אסתר פארדיל שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", exact: true,
-        death: "1916", cemetery: "הר הזיתים", plot: "הנביאים",
-        lat: 31.774316, lng: 35.242117,
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=70477" },
-      { id: "48291", name: "זלטא שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", exact: true,
-        death: "1934", cemetery: "הר הזיתים", plot: "הנביאים",
-        lat: 31.773109, lng: 35.244157,
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48291" },
-      { id: "44606", name: "חנה (יחנע) שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", exact: true,
-        death: "1936", cemetery: "הר הזיתים", plot: "הנביאים",
-        lat: 31.773099, lng: 35.244650,
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=44606" },
-      { id: "48290", name: "אברהם בנציון שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", exact: true,
-        death: "1939", cemetery: "הר הזיתים", plot: "הנביאים",
-        lat: 31.773113, lng: 35.244163,
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48290" },
-      { id: "48739", name: "טובא גינענדל שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", exact: true,
-        death: "1941", cemetery: "הר הזיתים", plot: "הנביאים",
-        lat: 31.772888, lng: 35.244723,
-        url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48739" },
-
-      // ── הר הזיתים — ללא חלקה במאגר ──
-      { id: "yaakov1887", name: "יעקב הלוי צוקרמן", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא · הקבר הישן ביותר", line: "צוקרמן", exact: false,
-        death: "1887", cemetery: "הר הזיתים", plot: "לא במאגר — שאל במשרד (02-6275050)",
-        lat: 31.7730, lng: 35.2430, offset: [0.0008, 0.0012] },
-      { id: "aaron1904", name: "רבי אהרן לנאל", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא", line: "לנאל", exact: false,
-        death: "1904", cemetery: "הר הזיתים", plot: "לא במאגר — שאל במשרד",
-        lat: 31.7730, lng: 35.2430, offset: [0.0004, 0.0006] },
-      { id: "meshulam1903", name: "משולם זלמן שפירא", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא", line: "שפירא", exact: false,
-        death: "1903", cemetery: "הר הזיתים", plot: "חלקת פרושים — לא במאגר",
-        lat: 31.7730, lng: 35.2430, offset: [0.0000, 0.0003] },
-      { id: "chaim1908", name: "רבי חיים יעקב שפירא", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא · בעלה של אסתר ליבא", line: "שפירא", exact: false,
-        death: "1908", cemetery: "הר הזיתים", plot: "סביר ליד אסתר (שורה 19) — לא במאגר · הערכה ~±30 מ'",
-        lat: 31.774603, lng: 35.242187, offset: [0.00015, 0.0002] },
-
-      // ── הר המנוחות ──
-      { id: "benzion", name: "בן ציון שפירא", kind: "ancestor", ancestorGen: 3, role: "סבא-רבא", line: "שפירא", exact: false, cemeteryOnly: true,
-        death: "1972", cemetery: "הר המנוחות", plot: "חלקה לא ידועה",
-        lat: 31.79813, lng: 35.17773, offset: [0.0003, 0.0005] },
-      { id: "avi", name: "אברהם יצחק לנאל", kind: "collateral", role: "דוד (קו לנאל)", line: "לנאל", exact: false, cemeteryOnly: true,
-        death: "2013", cemetery: "הר המנוחות", plot: "סביר חלקת הרבנים",
-        lat: 31.79813, lng: 35.17773, offset: [0.0005, 0.0000] },
-      { id: "sarah_lib", name: "שרה שפירא-ליברמן", kind: "collateral", role: "דודה (קו שפירא)", line: "שפירא", exact: false, cemeteryOnly: true,
-        death: "2008", cemetery: "הר המנוחות", plot: "חלקה לא ידועה",
-        lat: 31.79813, lng: 35.17773, offset: [-0.0003, 0.0001] },
-      { id: "gita", name: "גיטה מלכה שפירא (פרנק)", kind: "collateral", role: "בת-דודה (קו שפירא)", line: "שפירא", exact: false, cemeteryOnly: true,
-        death: "1960", cemetery: "הר המנוחות", plot: "ליד בעלה הרב צבי פסח פרנק",
-        lat: 31.79813, lng: 35.17773, offset: [0.0002, -0.0003] },
-      { id: "frank", name: "הרב צבי פסח פרנק", kind: "inlaw", role: "בעל גיטה מלכה", line: "שפירא", exact: false, cemeteryOnly: true,
-        death: "1960", cemetery: "הר המנוחות", plot: "קבר מפורסם",
-        lat: 31.79813, lng: 35.17773, offset: [0.0004, -0.0002] },
-      { id: "levin_md", name: "מרדכי דוד לוין", kind: "inlaw", role: "חתן משפחת שפירא", line: "שפירא", exact: false, cemeteryOnly: true,
-        death: "1967", cemetery: "הר המנוחות", plot: "חלקת הרבנים",
-        lat: 31.79813, lng: 35.17773, offset: [-0.0002, -0.0004] },
-      { id: "yellin", name: "יצחק יעקב ילין", kind: "inlaw", role: "חם (קו שפירא)", line: "שפירא", exact: false, cemeteryOnly: true,
-        death: "1964", cemetery: "הר המנוחות", plot: "חלקה לא ידועה",
-        lat: 31.79813, lng: 35.17773, offset: [-0.0004, 0.0003] },
-      { id: "yaakovov", name: "שמעון ישראל יעקובוביץ", kind: "inlaw", role: "בעל דודה (שרה)", line: "שפירא", exact: false, cemeteryOnly: true,
-        death: "1953", cemetery: "הר המנוחות", plot: "חלקה לא ידועה",
-        lat: 31.79813, lng: 35.17773, offset: [-0.0005, 0.0001] },
-
-      // ── סנהדריה ──
-      { id: "tzipora", name: "צפורה חנה שפירא (לוין)", kind: "collateral", role: "בת-דודה (קו שפירא)", line: "שפירא", exact: false, cemeteryOnly: true,
-        death: "1952", cemetery: "בית הקברות סנהדריה", plot: "ליד בעלה הרב אריה לוין",
-        lat: 31.7942, lng: 35.2268, offset: [0.0002, 0.0001] },
-      { id: "aryeh", name: "הרב אריה לוין", kind: "inlaw", role: "בעל צפורה חנה", line: "שפירא", exact: false, cemeteryOnly: true,
-        death: "1969", cemetery: "בית הקברות סנהדריה", plot: "קבר מפורסם",
-        lat: 31.7942, lng: 35.2268, offset: [0.0000, 0.0000] },
-    ];
-
-    // מקורות: קישור = עמוד/כרטיס ייחודי לאדם; הערה = GEDCOM, Mehokek, חיפוש שלילי…
+// מקורות: קישור = עמוד/כרטיס ייחודי לאדם; הערה = GEDCOM, Mehokek, חיפוש שלילי…
     const COD = (id) => `https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=${id}`;
     const srcLink = (text, url) => ({ type: "link", text, url });
     const srcNote = (text) => ({ type: "note", text });
@@ -437,9 +423,13 @@
     function accuracyNote(g) {
       if (g.exact) return "דיוק GPS: ±10 מ' (מקור: עיר דוד) · ניווט סופי לפי גוש/שורה/קבר";
       if (g.cemeteryOnly) return "מיקום: שער/אזור בית הקברות בלבד — לא מיקום הקבר";
+      if (g.locationSource === "geni_city") return "מיקום עיר בלבד (Geni) — לא נקודת קבר מדויקת";
+      if (g.locationSource === "geni_gps") return "מיקום Geni (עיר/GPS) — לא כרטיס עיר דוד";
       if (g.id === "chaim1908") return "מיקום משוער ליד אסתר ליבא — לא במאגר · ~±30 מ'";
       return "קבורה מאושרת · מיקום לא ידוע במאגר — שאל במשרד הר הזיתים";
     }
+
+    const REL_LABELS = { parent: "אב/אם", child: "בן/בת", spouse: "בן/בת זוג", sibling: "אח/אחות" };
 
     function escapeHtml(s) {
       return String(s)
@@ -448,10 +438,62 @@
         .replace(/"/g, "&quot;");
     }
 
+    function flagEmoji(code) {
+      if (!code || code.length !== 2) return "";
+      return String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+    }
+
+    function countryTag(g) {
+      if (!g.country) return "";
+      return `<span class="tag tag-country">${flagEmoji(g.countryCode)} ${escapeHtml(g.country)}</span>`;
+    }
+
+    function markerCoords(g) {
+      const lat = g.lat + (g.offset ? g.offset[0] : 0) + (g.spread ? g.spread[0] : 0);
+      const lng = g.lng + (g.offset ? g.offset[1] : 0) + (g.spread ? g.spread[1] : 0);
+      return [lat, lng];
+    }
+
+    function flyToGrave(graveId) {
+      const entry = markerLayers.find(x => x.g.id === graveId);
+      if (!entry) return;
+      const [lat, lng] = markerCoords(entry.g);
+      map.setView([lat, lng], 17);
+      entry.m.openPopup();
+      document.querySelectorAll(".grave-item").forEach(x => x.classList.remove("active"));
+      const el = sidebar.querySelector(`[data-grave-id="${graveId}"]`);
+      if (el) el.classList.add("active");
+    }
+
+    function edgesHtml(g) {
+      const edges = EDGES_BY_ID[g.id] || [];
+      if (!edges.length) return "";
+      const onMap = edges.filter(e => e.onMap && e.graveId);
+      const offMap = edges.filter(e => !e.onMap && e.geniUrl);
+      let html = "";
+      if (onMap.length) {
+        html += `<div class="edge-links"><strong>קשרים במפה:</strong> `;
+        html += onMap.map(e => {
+          const label = `${REL_LABELS[e.rel] || e.rel}: ${escapeHtml(e.name || e.graveId)}`;
+          return `<a href="#" data-fly="${escapeHtml(e.graveId)}">${label}</a>`;
+        }).join(" · ");
+        html += `</div>`;
+      }
+      if (offMap.length) {
+        html += `<div class="edge-links edge-off"><strong>קשרים נוספים:</strong> `;
+        html += offMap.map(e => {
+          const label = `${REL_LABELS[e.rel] || e.rel}: ${escapeHtml(e.name || "Geni")}`;
+          return `<a href="${escapeHtml(e.geniUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+        }).join(" · ");
+        html += `</div>`;
+      }
+      return html;
+    }
+
     function popupHtml(g) {
       const typeLabel = kindLabel(g);
       const locLabel = g.exact ? "מיקום מדויק (COD)" : (g.cemeteryOnly ? "בית קברות בלבד" : "קבורה מאושרת");
-      let html = `<div class="popup-name">${g.name}</div>`;
+      let html = `<div class="popup-name">${g.name} ${countryTag(g)}</div>`;
       html += profileBarHtml(g);
       html += `<strong>קרבה:</strong> ${relationLabel(g)}<br>`;
       html += `<strong>קו:</strong> ${g.line}<br>`;
@@ -461,6 +503,7 @@
       html += `<strong>מיקום:</strong> ${g.plot}<br>`;
       html += `<em>${locLabel}</em>`;
       html += `<div class="popup-accuracy">${accuracyNote(g)}</div>`;
+      html += edgesHtml(g);
       const sources = personSources(g);
       if (sources.length) {
         html += `<div class="popup-sources"><strong>מקורות:</strong><ul>`;
@@ -484,84 +527,175 @@
 
     const sidebar = document.getElementById("sidebar");
     const markers = {};
-
-    const sections = [
-      { title: "הר הזיתים — מיקום מדויק ±10 מ'", filter: g => g.exact && g.cemetery === "הר הזיתים" },
-      { title: "הר הזיתים — ללא מיקום מדויק", filter: g => !g.exact && g.cemetery === "הר הזיתים" },
-      { title: "הר המנוחות", filter: g => g.cemetery === "הר המנוחות" },
-      { title: "סנהדריה", filter: g => g.cemetery.includes("סנהדריה") },
-    ];
-
     const markerLayers = [];
-    sections.forEach(sec => {
-      const items = GRAVES.filter(sec.filter);
-      if (!items.length) return;
-      const h2 = document.createElement("h2");
-      const n = items.length;
-      h2.textContent = n ? `${sec.title} (${n})` : sec.title;
-      sidebar.appendChild(h2);
-      items.forEach(g => {
-        const lat = g.lat + (g.offset ? g.offset[0] : 0);
-        const lng = g.lng + (g.offset ? g.offset[1] : 0);
-        const mLat = lat + (g.spread ? g.spread[0] : 0);
-        const mLng = lng + (g.spread ? g.spread[1] : 0);
-        const color = markerColor(g);
-        const radius = g.exact ? 9 : 7;
-        if (g.exact) {
-          L.circle([lat, lng], {
-            radius: 10, color, fillColor: color, fillOpacity: 0.07, weight: 1, dashArray: "4 4",
-            interactive: false,
-          }).addTo(map);
-        }
-        const m = L.circleMarker([mLat, mLng], {
-          radius, fillColor: color, color: "#fff", weight: 2, fillOpacity: g.exact ? 0.92 : 0.65,
-        }).addTo(map).bindPopup(popupHtml(g), { maxWidth: 320 });
-        m.on("popupopen", () => {
-          const el = m.getPopup().getElement();
-          if (el) {
-            L.DomEvent.disableClickPropagation(el);
-            L.DomEvent.disableScrollPropagation(el);
-            el.querySelectorAll("a").forEach((a) => L.DomEvent.disableClickPropagation(a));
-          }
-        });
-        m.bringToFront();
-        markers[g.id] = m;
-        markerLayers.push({ m, g });
+    const graveItems = {};
+    const sectionEls = [];
+    let filterCountry = "";
+    let filterLine = "";
 
-        const el = document.createElement("div");
-        el.className = "grave-item";
-        const tagType = g.kind === "inlaw"
-          ? '<span class="tag tag-inlaw">חם</span>'
-          : g.kind === "collateral"
-            ? '<span class="tag tag-side">צדדי</span>'
-            : '<span class="tag tag-blood">דם</span>';
-        const tagLoc = g.exact
-          ? '<span class="tag tag-exact">±10 מ\'</span>'
-          : '<span class="tag tag-approx">משוער</span>';
-        const tagGen = kindTag(g);
-        el.innerHTML = `<div class="name">${g.name} ${tagGen}${tagType}${tagLoc}</div>
-          <div class="meta">${relationLabel(g)}</div>
-          <div class="meta">${g.death || ""} · ${g.plot}</div>`;
-        el.addEventListener("click", () => {
-          map.setView([mLat, mLng], 17);
-          markers[g.id].openPopup();
-          document.querySelectorAll(".grave-item").forEach(x => x.classList.remove("active"));
-          el.classList.add("active");
-        });
-        sidebar.appendChild(el);
+    function countryOrder(code) {
+      if (code === "IL") return 0;
+      return 1;
+    }
+
+    function groupedGraves(list) {
+      const groups = new Map();
+      list.forEach(g => {
+        const cKey = g.countryCode || "ZZ";
+        if (!groups.has(cKey)) groups.set(cKey, { country: g.country || cKey, code: cKey, cemeteries: new Map() });
+        const cem = g.cemetery || "אחר";
+        const bucket = groups.get(cKey).cemeteries;
+        if (!bucket.has(cem)) bucket.set(cem, []);
+        bucket.get(cem).push(g);
       });
+      return [...groups.entries()]
+        .sort((a, b) => countryOrder(a[0]) - countryOrder(b[0]) || a[1].country.localeCompare(b[1].country, "he"))
+        .map(([, v]) => v);
+    }
+
+    function passesFilter(g) {
+      if (filterCountry && g.countryCode !== filterCountry) return false;
+      if (filterLine && g.line !== filterLine) return false;
+      return true;
+    }
+
+    function fitVisibleBounds() {
+      const coords = markerLayers.filter(({ g }) => passesFilter(g))
+        .map(({ g }) => markerCoords(g));
+      if (!coords.length) return;
+      const isIsraelOnly = coords.every(c => c[0] > 29 && c[0] < 34 && c[1] > 34 && c[1] < 36);
+      map.fitBounds(coords, { padding: [40, 40], maxZoom: isIsraelOnly ? 16 : 5 });
+    }
+
+    function applyFilters() {
+      markerLayers.forEach(({ g, m }) => {
+        const show = passesFilter(g);
+        m.setStyle({ opacity: show ? 1 : 0.15, fillOpacity: show ? (g.exact ? 0.92 : 0.65) : 0.1 });
+        m._path && (m._path.style.pointerEvents = show ? "auto" : "none");
+        if (graveItems[g.id]) graveItems[g.id].classList.toggle("hidden", !show);
+      });
+      sectionEls.forEach(sec => {
+        const anyVisible = [...sec.querySelectorAll(".grave-item")].some(el => !el.classList.contains("hidden"));
+        sec.classList.toggle("hidden", !anyVisible);
+      });
+      fitVisibleBounds();
+    }
+
+    function buildSidebarAndMarkers() {
+      sidebar.querySelectorAll(".grave-section").forEach(n => n.remove());
+      Object.values(markers).forEach(m => map.removeLayer(m));
+      markerLayers.length = 0;
+      Object.keys(markers).forEach(k => delete markers[k]);
+      Object.keys(graveItems).forEach(k => delete graveItems[k]);
+      sectionEls.length = 0;
+
+      groupedGraves(GRAVES).forEach(group => {
+        const sec = document.createElement("div");
+        sec.className = "grave-section";
+        const hCountry = document.createElement("h2");
+        hCountry.textContent = `${flagEmoji(group.code)} ${group.country}`;
+        sec.appendChild(hCountry);
+        sectionEls.push(sec);
+
+        group.cemeteries.forEach((items, cemetery) => {
+          const h2 = document.createElement("h2");
+          h2.textContent = `${cemetery} (${items.length})`;
+          h2.style.fontSize = "0.82rem";
+          h2.style.marginTop = "4px";
+          sec.appendChild(h2);
+          items.sort((a, b) => (b.ancestorGen || 0) - (a.ancestorGen || 0) || a.name.localeCompare(b.name, "he"));
+          items.forEach(g => {
+            const [mLat, mLng] = markerCoords(g);
+            const baseLat = g.lat + (g.offset ? g.offset[0] : 0);
+            const baseLng = g.lng + (g.offset ? g.offset[1] : 0);
+            const color = markerColor(g);
+            const radius = g.exact ? 9 : 7;
+            if (g.exact) {
+              L.circle([baseLat, baseLng], {
+                radius: 10, color, fillColor: color, fillOpacity: 0.07, weight: 1, dashArray: "4 4",
+                interactive: false,
+              }).addTo(map);
+            }
+            const m = L.circleMarker([mLat, mLng], {
+              radius, fillColor: color, color: "#fff", weight: 2, fillOpacity: g.exact ? 0.92 : 0.65,
+            }).addTo(map).bindPopup(popupHtml(g), { maxWidth: 340 });
+            m.on("popupopen", () => {
+              const el = m.getPopup().getElement();
+              if (el) {
+                L.DomEvent.disableClickPropagation(el);
+                L.DomEvent.disableScrollPropagation(el);
+                el.querySelectorAll("a").forEach((a) => {
+                  L.DomEvent.disableClickPropagation(a);
+                  if (a.dataset.fly) {
+                    a.addEventListener("click", (ev) => {
+                      ev.preventDefault();
+                      flyToGrave(a.dataset.fly);
+                    });
+                  }
+                });
+              }
+            });
+            markers[g.id] = m;
+            markerLayers.push({ m, g });
+
+            const el = document.createElement("div");
+            el.className = "grave-item";
+            el.dataset.graveId = g.id;
+            const tagType = g.kind === "inlaw"
+              ? '<span class="tag tag-inlaw">חם</span>'
+              : g.kind === "collateral"
+                ? '<span class="tag tag-side">צדדי</span>'
+                : '<span class="tag tag-blood">דם</span>';
+            const tagLoc = g.exact
+              ? '<span class="tag tag-exact">±10 מ\'</span>'
+              : '<span class="tag tag-approx">משוער</span>';
+            const tagGen = kindTag(g);
+            el.innerHTML = `<div class="name">${g.name} ${tagGen}${tagType}${tagLoc}${countryTag(g)}</div>
+              <div class="meta">${relationLabel(g)}</div>
+              <div class="meta">${g.death || ""} · ${g.plot}</div>`;
+            el.addEventListener("click", () => flyToGrave(g.id));
+            sec.appendChild(el);
+            graveItems[g.id] = el;
+          });
+        });
+        sidebar.appendChild(sec);
+      });
+
+      markerLayers.filter(({ g }) => g.kind === "ancestor").forEach(({ m }) => m.bringToFront());
+      applyFilters();
+    }
+
+    const countrySelect = document.getElementById("filter-country");
+    const lineSelect = document.getElementById("filter-line");
+    [...new Set(GRAVES.map(g => g.countryCode).filter(Boolean))]
+      .sort((a, b) => countryOrder(a) - countryOrder(b))
+      .forEach(code => {
+        const g = GRAVES.find(x => x.countryCode === code);
+        const opt = document.createElement("option");
+        opt.value = code;
+        opt.textContent = `${flagEmoji(code)} ${g.country}`;
+        countrySelect.appendChild(opt);
+      });
+    [...new Set(GRAVES.map(g => g.line).filter(Boolean))].sort((a, b) => a.localeCompare(b, "he")).forEach(line => {
+      const opt = document.createElement("option");
+      opt.value = line;
+      opt.textContent = line;
+      lineSelect.appendChild(opt);
+    });
+    countrySelect.addEventListener("change", () => { filterCountry = countrySelect.value; applyFilters(); });
+    lineSelect.addEventListener("change", () => { filterLine = lineSelect.value; applyFilters(); });
+    document.getElementById("btn-israel").addEventListener("click", () => {
+      map.fitBounds([[31.76, 35.20], [31.80, 35.26]], { padding: [30, 30], maxZoom: 16 });
+    });
+    document.getElementById("btn-world").addEventListener("click", () => {
+      filterCountry = "";
+      filterLine = "";
+      countrySelect.value = "";
+      lineSelect.value = "";
+      applyFilters();
     });
 
-    // Ancestors on top so row-9 cluster (18–21) doesn't hide red pins under blue/orange
-    markerLayers
-      .filter(({ g }) => g.kind === "ancestor")
-      .forEach(({ m }) => m.bringToFront());
-
-    const allCoords = GRAVES.map(g => [
-      g.lat + (g.offset ? g.offset[0] : 0),
-      g.lng + (g.offset ? g.offset[1] : 0),
-    ]);
-    map.fitBounds(allCoords, { padding: [40, 40], maxZoom: 16 });
+    buildSidebarAndMarkers();
 
     L.marker([31.773, 35.243], { opacity: 0.85 })
       .addTo(map)
