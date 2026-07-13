@@ -51,6 +51,15 @@
     .tag-approx { background: #fef9e7; color: #9a7d0a; }
     .tag-gen { background: #f4ecf7; color: #6c3483; }
     .tag-side { background: #fdebd0; color: #a04000; }
+    .tag-conf-verified { background: #e8f8f0; color: #145a32; }
+    .tag-conf-partial { background: #fef9e7; color: #7d6608; }
+    .tag-conf-geni_only { background: #f5eef8; color: #6c3483; }
+    .tag-conf-hypothesis { background: #fdebd0; color: #935116; }
+    .tag-conf-surname_only { background: #f4f6f7; color: #566573; }
+    .legend .conf-chip {
+      display: inline-block; font-size: 0.68rem; padding: 1px 6px; border-radius: 3px;
+      font-style: normal;
+    }
     #map { flex: 1; min-height: 400px; }
     .leaflet-popup-content { font-size: 0.85rem; line-height: 1.5; max-width: 320px; }
     .popup-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
@@ -110,6 +119,11 @@
       <span><i class="dot dot-approx"></i> קבורה מאושרת, ללא חלקה</span>
       <span><i class="dot dot-collateral"></i> קרוב צדדי (דם, לא אב קדמון)</span>
       <span><i class="dot dot-cemetery"></i> שער בית קברות בלבד</span>
+      <span><span class="conf-chip tag-conf-verified">מאומת</span> קשר משפחתי</span>
+      <span><span class="conf-chip tag-conf-partial">חלקי</span></span>
+      <span><span class="conf-chip tag-conf-geni_only">Geni</span></span>
+      <span><span class="conf-chip tag-conf-hypothesis">השערה</span></span>
+      <span><span class="conf-chip tag-conf-surname_only">שם משפחה</span></span>
     </div>
   </header>
   <div class="map-toolbar">
@@ -121,6 +135,9 @@
     </label>
     <label>דורות
       <select id="filter-gen"><option value="">הכל</option></select>
+    </label>
+    <label>קשר משפחתי
+      <select id="filter-conf"><option value="">הכל</option></select>
     </label>
     <button type="button" id="btn-israel">מרכז ישראל</button>
     <button type="button" id="btn-world">הכל — זום עולמי</button>
@@ -138,17 +155,17 @@
       graves: [
       { id: "83877", ftId: "FT044", name: "גאלדא צוקרמאן", kind: "inlaw", role: "נישואין · אשת שמואל (ראשונה — לא אם ביילא)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1890", cemetery: "הר הזיתים", plot: "ישן · ט · שורה 11 · קבר 39", lat: 31.777019, lng: 35.241973, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=83877" },
       { id: "74463", ftId: "FT033", name: "אסתר ליבא שפירא", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא (אשת חיים יעקב)", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1910", cemetery: "הר הזיתים", plot: "אמצעי 2 · ב · שורה 19 · קבר 35", lat: 31.774603, lng: 35.242187, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=74463" },
-      { id: "40371", ftId: "FT050", geniId: "6000000002683091075", name: "הדסה צוקרמן (שרלין)", kind: "ancestor", ancestorGen: 4, role: "סבת-סבא (אם ביילא גולדא · אם שלמון)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1938", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 18", lat: 31.776742, lng: 35.242113, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40371", spread: [-3.5e-05, -2.5e-05] },
+      { id: "40371", ftId: "FT050", geniId: "6000000002683091075", name: "הדסה צוקרמן (שרלין)", kind: "ancestor", ancestorGen: 4, role: "סבת-סבא (אם ביילא גולדא · אם שלמון)", line: "צוקרמן", linkConfidence: "verified", linkNote: "קו דם מאומת — מצבה #40371 + מפקד מונטיפיור + ויקיפדיה", country: "ישראל", countryCode: "IL", death: "1938", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 18", lat: 31.776742, lng: 35.242113, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40371", spread: [-3.5e-05, -2.5e-05] },
       { id: "40375", ftId: "FT040", name: "שמואל הלוי צוקרמן", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (אבי ביילא גולדא · צד אמא)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1929", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 19", lat: 31.776748, lng: 35.242115, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40375", spread: [-1.2e-05, 8e-06] },
       { id: "40379", ftId: "FT043", name: "חיים יעקב צוקרמן", kind: "collateral", role: "דוד (בן שמואל — לא בקו ישיר)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1971", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 20", lat: 31.776755, lng: 35.242119, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40379", spread: [1.2e-05, 1.2e-05] },
       { id: "40383", ftId: "FT044", name: "ברכה רבקה צוקרמן", kind: "inlaw", role: "אשת דוד (חיים יעקב)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1987", cemetery: "הר הזיתים", plot: "הנביאים · ח · שורה 9 · קבר 21", lat: 31.776761, lng: 35.242121, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=40383", spread: [3.5e-05, 2.5e-05] },
       { id: "24815", ftId: "FT025", name: "אהרן צבי לנאייל", kind: "collateral", role: "אח של סבתא מרים (בן פייבל)", line: "לנאל", country: "ישראל", countryCode: "IL", death: "1939", cemetery: "הר הזיתים", plot: "ורשה · ורשה ב · שורה 13 · קבר 1", lat: 31.773158, lng: 35.245339, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=24815" },
-      { id: "63478", ftId: "FT062", name: "הלל שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין · שקלוב)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1895", cemetery: "הר הזיתים", plot: "ישן · ib · שורה 14 · קבר 1", lat: 31.77663, lng: 35.241441, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=63478" },
-      { id: "70477", name: "אסתר פארדיל שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1916", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.774316, lng: 35.242117, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=70477" },
-      { id: "48291", name: "זלטא שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1934", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.773109, lng: 35.244157, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48291" },
-      { id: "44606", name: "חנה (יחנע) שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1936", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.773099, lng: 35.24465, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=44606" },
-      { id: "48290", name: "אברהם בנציון שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1939", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.773113, lng: 35.244163, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48290" },
-      { id: "48739", name: "טובא גינענדל שרלין", kind: "inlaw", role: "משפחת חם (קו שרלין)", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1941", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.772888, lng: 35.244723, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48739" },
+      { id: "63478", ftId: "FT062", name: "הלל שרלין", kind: "inlaw", role: "קבר מאומת · קשר לניסן = השערה (שקלוב)", line: "שרלין", linkConfidence: "hypothesis", linkNote: "קבר מאומת (#63478); קשר לניסן נתן = השערה (אותו שקלוב)", country: "ישראל", countryCode: "IL", death: "1895", cemetery: "הר הזיתים", plot: "ישן · ib · שורה 14 · קבר 1", lat: 31.77663, lng: 35.241441, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=63478" },
+      { id: "70477", name: "אסתר פארדיל שרלין", kind: "inlaw", role: "שם משפחה שרלין — קשר לקו ניסן לא הוכח", line: "שרלין", linkConfidence: "surname_only", linkNote: "שם משפחה שרלין בלבד — אשת מרדכי ניסן (לא ניסן נתן)", country: "ישראל", countryCode: "IL", death: "1916", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.774316, lng: 35.242117, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=70477" },
+      { id: "48291", name: "זלטא שרלין", kind: "inlaw", role: "שם משפחה שרלין — קשר לקו ניסן לא הוכח", line: "שרלין", linkConfidence: "surname_only", linkNote: "שם משפחה בלבד — בת חיים ברוך (ענף אחר)", country: "ישראל", countryCode: "IL", death: "1934", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.773109, lng: 35.244157, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48291" },
+      { id: "44606", name: "חנה (יחנע) שרלין", kind: "inlaw", role: "שם משפחה שרלין — קשר לקו ניסן לא הוכח", line: "שרלין", linkConfidence: "surname_only", linkNote: "שם משפחה בלבד — בת מנחם צבי", country: "ישראל", countryCode: "IL", death: "1936", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.773099, lng: 35.24465, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=44606" },
+      { id: "48290", name: "אברהם בנציון שרלין", kind: "inlaw", role: "שם משפחה שרלין — קשר לקו ניסן לא הוכח", line: "שרלין", linkConfidence: "surname_only", linkNote: "שם משפחה בלבד — בן חיים ברוך (ענף אחר)", country: "ישראל", countryCode: "IL", death: "1939", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.773113, lng: 35.244163, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48290" },
+      { id: "48739", name: "טובא גינענדל שרלין", kind: "inlaw", role: "שם משפחה שרלין — קשר לקו ניסן לא הוכח", line: "שרלין", linkConfidence: "surname_only", linkNote: "שם משפחה בלבד — בת אברהם מענדיל", country: "ישראל", countryCode: "IL", death: "1941", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.772888, lng: 35.244723, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48739" },
       { id: "yaakov1887", ftId: "FT041", name: "יעקב הלוי צוקרמן", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא (אבי שמואל · צד אמא) · הקבר הישן ביותר", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "1887", cemetery: "הר הזיתים", plot: "לא במאגר — שאל במשרד (02-6275050)", lat: 31.773, lng: 35.243, exact: false, offset: [0.0008, 0.0012] },
       { id: "aaron1904", ftId: "FT021", geniId: "6000000001133675244", name: "רבי אהרן לנאל", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (צד סבתא · אבי שרגא פייבל)", line: "לנאל", country: "ישראל", countryCode: "IL", death: "1904", cemetery: "הר הזיתים", plot: "לא במאגר — שאל במשרד", lat: 31.773, lng: 35.243, exact: false, offset: [0.0004, 0.0006] },
       { id: "meshulam1903", ftId: "FT030", name: "משולם זלמן שפירא", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (צד שפירא)", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1903", cemetery: "הר הזיתים", plot: "חלקת פרושים — לא במאגר", lat: 31.773, lng: 35.243, exact: false, offset: [0.0, 0.0003] },
@@ -163,23 +180,23 @@
       { id: "yaakovov", name: "שמעון ישראל יעקובוביץ", kind: "inlaw", role: "בעל דודה (שרה)", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1953", cemetery: "הר המנוחות", plot: "חלקה לא ידועה", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [-0.0005, 0.0001] },
       { id: "tzipora", name: "צפורה חנה שפירא (לוין)", kind: "collateral", role: "בת-דודה של סבא-רבא (בן ציון)", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1952", cemetery: "בית הקברות סנהדריה", plot: "ליד בעלה הרב אריה לוין", lat: 31.7942, lng: 35.2268, exact: false, cemeteryOnly: true, offset: [0.0002, 0.0001] },
       { id: "aryeh", name: "הרב אריה לוין", kind: "inlaw", role: "בעל צפורה חנה", line: "שפירא", country: "ישראל", countryCode: "IL", death: "1969", cemetery: "בית הקברות סנהדריה", plot: "קבר מפורסם", lat: 31.7942, lng: 35.2268, exact: false, cemeteryOnly: true, offset: [0.0, 0.0] },
-      { id: "FT070", ftId: "FT070", geniId: "6000000178917217904", name: "ר' נחום שרלין", kind: "ancestor", ancestorGen: 6, role: "gggg-grandfather", line: "שרלין", country: "ישראל", countryCode: "IL", death: "1871", cemetery: "Jerusalem", plot: "מיקום Geni (עיר)", lat: 31.768319, lng: 35.21371, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/6000000178917217904" },
-      { id: "FT060", ftId: "FT060", geniId: "6000000002180947497", name: "רבי ניסן נתן שרלין", kind: "ancestor", ancestorGen: 5, role: "ggg-grandfather", line: "שרלין", country: "בלארוס", countryCode: "BY", death: "1873", cemetery: "Mogilev", plot: "מיקום Geni (עיר)", lat: 53.8980663, lng: 30.3325337, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/6000000002180947497" },
+      { id: "FT070", ftId: "FT070", geniId: "6000000178917217904", name: "ר' נחום שרלין", kind: "ancestor", ancestorGen: 6, role: "gggg-grandfather", line: "שרלין", linkConfidence: "partial", linkNote: "חלקי — חי בירושלים מתועד (חתימה 1847); פטירה 1871 = Geni בלבד", country: "ישראל", countryCode: "IL", death: "1871", cemetery: "Jerusalem", plot: "מיקום Geni (עיר)", lat: 31.768319, lng: 35.21371, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/6000000178917217904" },
+      { id: "FT060", ftId: "FT060", geniId: "6000000002180947497", name: "רבי ניסן נתן שרלין", kind: "ancestor", ancestorGen: 5, role: "ggg-grandfather", line: "שרלין", linkConfidence: "verified", linkNote: "מאומת — מפקד 1866 #1625 + גריבסקי + מצבת הדסה «בת ניסן»", country: "בלארוס", countryCode: "BY", death: "1873", cemetery: "Mogilev", plot: "מיקום Geni (עיר)", lat: 53.8980663, lng: 30.3325337, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/6000000002180947497" },
       { id: "FT080", ftId: "FT080", geniId: "4157971353870051066", name: "ר' יהושע צייטלין", kind: "ancestor", ancestorGen: 7, role: "gggg-grandfather", line: "צייטלין", country: "אוקראינה", countryCode: "UA", cemetery: "Kherson", plot: "מיקום Geni (עיר)", lat: 46.630001, lng: 32.599998, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/4157971353870051066" },
-      { id: "FT063", ftId: "FT063", name: "ירמיהו שרלין", kind: "collateral", ancestorGen: 6, role: "אב הלל (משקלוב) — לא במאגר COD", line: "שרלין", country: "ישראל", countryCode: "IL", cemetery: "הר הזיתים", plot: "סביר ליד הלל (ישן ib/14) — לא במאגר", lat: 31.77663, lng: 35.24144, exact: false, cemeteryOnly: false, locationSource: "manual", offset: [0.00025, 0.00035] },
-      { id: "FT067", ftId: "FT067", geniId: "6000000002802703085", name: "יצחק מנחם זונדל שפירא", kind: "ancestor", ancestorGen: 6, role: "אב חיים יעקב · אב\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\", line: "שפירא", country: "בלארוס", countryCode: "BY", death: "1845", cemetery: "איליה (Ilia)", plot: "קבורה באיליה — Geni GPS", lat: 54.4168102, lng: 27.2930165, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/6000000002802703085" },
+      { id: "FT063", ftId: "FT063", name: "ירמיהו שרלין", kind: "collateral", ancestorGen: 6, role: "אב הלל (השערה) — לא במאגר COD", line: "שרלין", linkConfidence: "hypothesis", linkNote: "השערה — רק «בן ירמיהו» על מצבת הלל; אין מקור נוסף", country: "ישראל", countryCode: "IL", cemetery: "הר הזיתים", plot: "סביר ליד הלל (ישן ib/14) — לא במאגר", lat: 31.77663, lng: 35.24144, exact: false, cemeteryOnly: false, locationSource: "manual", offset: [0.00025, 0.00035] },
+      { id: "FT067", ftId: "FT067", geniId: "6000000002802703085", name: "יצחק מנחם זונדל שפירא", kind: "ancestor", ancestorGen: 6, role: "אב חיים יעקב · אב\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\", line: "שפירא", country: "בלארוס", countryCode: "BY", death: "1845", cemetery: "איליה (Ilia)", plot: "קבורה באיליה — Geni GPS", lat: 54.4168102, lng: 27.2930165, exact: false, cemeteryOnly: false, locationSource: "geni_gps", url: "https://www.geni.com/people/-/6000000002802703085" },
       { id: "seed_kalvarija_shapira", name: "קלוואריה — מוצא משפחת שפירא", kind: "collateral", ancestorGen: 4, role: "מקום לידת משולם זלמן — לא קבר", line: "שפירא", country: "ליטא", countryCode: "LT", cemetery: "קלוואריה (Kalvarija)", plot: "מיקום עיר בלבד — מוצא משפחתי", lat: 54.4156509, lng: 23.2236949, exact: false, cemeteryOnly: false, locationSource: "geni_city" },
       { id: "seed_mezritsh_zukerman", name: "מזריטש — מוצא משפחת צוקרמן", kind: "collateral", ancestorGen: 5, role: "מקום לידת יעקב ושמואל — לא קבר", line: "צוקרמן", country: "פולין", countryCode: "PL", cemetery: "מזריטש (Miedzyrzec)", plot: "מיקום עיר בלבד — מוצא משפחתי", lat: 51.9864, lng: 22.5908, exact: false, cemeteryOnly: false, locationSource: "geni_city" },
       { id: "seed_warsaw_lanoil", name: "ורשה — מוצא משפחת לנאל", kind: "collateral", ancestorGen: 4, role: "מקום לידת ר' אהרן לנאל — לא קבר", line: "לנאל", country: "פולין", countryCode: "PL", cemetery: "ורשה (Warsaw)", plot: "מיקום עיר בלבד — מוצא משפחתי", lat: 52.2297, lng: 21.0122, exact: false, cemeteryOnly: false, locationSource: "geni_city" },
       { id: "seed_kovno_zakheim", name: "קובנה — מוצא משפחת זקהיים", kind: "collateral", ancestorGen: 6, role: "בית אב של אסתר ליבא — לא קבר", line: "זקהיים", country: "ליטא", countryCode: "LT", cemetery: "קובנה (Kovno / Kaunas)", plot: "מיקום עיר בלבד — מוצא משפחתי", lat: 54.8985, lng: 23.9036, exact: false, cemeteryOnly: false, locationSource: "geni_city" },
       { id: "seed_pilvisok_rashgolin", name: "פילווישוק — מוצא משפחת ראשגולין", kind: "collateral", ancestorGen: 4, role: "קו חם: חנה רייזל לבית ראשגולין — לא קבר", line: "ראשגולין", country: "ליטא", countryCode: "LT", cemetery: "פילווישוק (Pilviškiai) — ליד קובנה", plot: "מיקום עיר בלבד — מוצא משפחתי", lat: 54.7246, lng: 23.2296, exact: false, cemeteryOnly: false, locationSource: "geni_city" },
-      { id: "FT072", ftId: "FT072", geniId: "6000000178917167842", name: "רבקה שרלין", kind: "inlaw", ancestorGen: 6, role: "אשת נחום שרלין — קבורה לא ידועה", line: "שרלין", country: "בלארוס", countryCode: "BY", cemetery: "שקלוב (Shklov)", plot: "מיקום לידה (Geni) — לא מיקום קבר", lat: 54.2088845, lng: 30.2900729, exact: false, cemeteryOnly: false, locationSource: "geni_city", url: "https://www.geni.com/people/-/6000000178917167842" },
-      { id: "FT061", ftId: "FT061", geniId: "6000000178918544833", name: "חוה גיטל שרלין", kind: "ancestor", ancestorGen: 5, role: "סבת-סבא-רבא-רבא (אם הדסה) — קבורה לא ידועה", line: "שרלין", country: "ישראל", countryCode: "IL", cemetery: "ירושלים", plot: "מפקד מונטיפיור 1866 #1625 — תושבת; מקום קבר לא ידוע", lat: 31.7683, lng: 35.2137, exact: false, cemeteryOnly: true, locationSource: "manual", url: "https://www.geni.com/people/-/6000000178918544833" },
+      { id: "FT072", ftId: "FT072", geniId: "6000000178917167842", name: "רבקה שרלין", kind: "inlaw", ancestorGen: 6, role: "אשת נחום (Geni) — זיהוי במפקד לא מאומת", line: "שרלין", linkConfidence: "geni_only", linkNote: "Geni בלבד — לא זוהתה כ«רבקה» במפקד 1875", country: "בלארוס", countryCode: "BY", cemetery: "שקלוב (Shklov)", plot: "מיקום לידה (Geni) — לא מיקום קבר", lat: 54.2088845, lng: 30.2900729, exact: false, cemeteryOnly: false, locationSource: "geni_city", url: "https://www.geni.com/people/-/6000000178917167842" },
+      { id: "FT061", ftId: "FT061", geniId: "6000000178918544833", name: "חוה גיטל שרלין", kind: "ancestor", ancestorGen: 5, role: "סבת-סבא-רבא-רבא (אם הדסה) — קבורה לא ידועה", line: "שרלין", linkConfidence: "verified", linkNote: "מאומת — מפקד 1875/1866 + גריבסקי §30651", country: "ישראל", countryCode: "IL", cemetery: "ירושלים", plot: "מפקד מונטיפיור 1866 #1625 — תושבת; מקום קבר לא ידוע", lat: 31.7683, lng: 35.2137, exact: false, cemeteryOnly: true, locationSource: "manual", url: "https://www.geni.com/people/-/6000000178918544833" },
       { id: "seed_chava_lanoil", geniId: "6000000001133738371", name: "חוה לנאל", kind: "inlaw", ancestorGen: 4, role: "אשת ר' אהרן לנאל — קבורה לא ידועה", line: "לנאל", country: "פולין", countryCode: "PL", cemetery: "ורשה (Warsaw)", plot: "מיקום עיר בלבד (Geni) — לא נקודת קבר", lat: 52.2297, lng: 21.0122, exact: false, cemeteryOnly: false, locationSource: "geni_city", url: "https://www.geni.com/people/Chava-Lanoil/6000000001133738371" },
       { id: "FT034", ftId: "FT034", geniId: "6000000005237022195", name: "הרב בן ציון זקהיים (מקובנה)", kind: "ancestor", ancestorGen: 6, role: "אב אסתר ליבא — קבורה לא ידועה", line: "זקהיים", country: "ליטא", countryCode: "LT", cemetery: "קובנה (Kovno / Kaunas)", plot: "מיקום עיר בלבד (Geni) — לא נקודת קבר", lat: 54.8985, lng: 23.9036, exact: false, cemeteryOnly: false, locationSource: "geni_city", url: "https://www.geni.com/people/-/6000000005237022195" },
       { id: "seed_faiga_malka_zakheim", geniId: "6000000005240376180", name: "פייגא מלכה זקהיים", kind: "inlaw", ancestorGen: 6, role: "אשת בן ציון — קבורה לא ידועה", line: "זקהיים", country: "ליטא", countryCode: "LT", cemetery: "קובנה (Kovno / Kaunas)", plot: "מיקום עיר בלבד (Geni) — לא נקודת קבר", lat: 54.8985, lng: 23.9036, exact: false, cemeteryOnly: false, locationSource: "geni_city", url: "https://www.geni.com/people/Faiga-Malka-%D7%96%D7%A7/6000000005240376180" },
-      { id: "seed_yisrael_zak_zakheim", geniId: "6000000005236937162", name: "ר' ישראל ז\"ק ה\"ם", kind: "ancestor", ancestorGen: 7, role: "אב בן ציון זקהיים — קבורה לא ידועה", line: "זקהיים", country: "ליטא", countryCode: "LT", cemetery: "קובנה (Kovno / Kaunas)", plot: "מיקום עיר בלבד (Geni) — לא נקודת קבר", lat: 54.8985, lng: 23.9036, exact: false, cemeteryOnly: false, locationSource: "geni_city", url: "https://www.geni.com/people/-/6000000005236937162" },
-      { id: "seed_glike_zukerman", name: "גליקע (אשת יעקב הלוי צוקרמן)", kind: "ancestor", ancestorGen: 5, role: "אשת יעקב הלוי — אם שמואל הלוי (מונטיפיור 1866 #2182)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "27.07.1887 (ו' אב תרמ\"ז)", cemetery: "הר הזיתים", plot: "קבורה לא ידועה במאגר — לפי MyHeritage tree record", lat: 31.773, lng: 35.243, exact: false, cemeteryOnly: true, locationSource: "manual" },
+      { id: "seed_yisrael_zak_zakheim", geniId: "6000000005236937162", name: "ר' ישראל ז\\", kind: "ancestor", ancestorGen: 7, role: "אב בן ציון זקהיים — קבורה לא ידועה", line: "זקהיים", country: "ליטא", countryCode: "LT", cemetery: "קובנה (Kovno / Kaunas)", plot: "מיקום עיר בלבד (Geni) — לא נקודת קבר", lat: 54.8985, lng: 23.9036, exact: false, cemeteryOnly: false, locationSource: "geni_city", url: "https://www.geni.com/people/-/6000000005236937162" },
+      { id: "seed_glike_zukerman", name: "גליקע (אשת יעקב הלוי צוקרמן)", kind: "ancestor", ancestorGen: 5, role: "אשת יעקב הלוי — אם שמואל הלוי (מונטיפיור 1866 #2182)", line: "צוקרמן", country: "ישראל", countryCode: "IL", death: "27.07.1887 (ו' אב תרמ\\", cemetery: "הר הזיתים", plot: "קבורה לא ידועה במאגר — לפי MyHeritage tree record", lat: 31.773, lng: 35.243, exact: false, cemeteryOnly: true, locationSource: "manual" },
       ],
       edges: {
   "24815": [{ rel: "parent", geniId: "", graveId: null, name: "שרגא פייבל לנאייל", onMap: false }],
@@ -190,7 +207,7 @@
   "63478": [{ rel: "parent", geniId: "", graveId: "FT063", name: "ירמיהו שרלין", onMap: true }],
   "74463": [{ rel: "parent", geniId: "6000000005237022195", graveId: "FT034", name: "הרב בן ציון זקהיים (מקובנה)", onMap: true }, { rel: "spouse", geniId: "", graveId: "chaim1908", name: "רבי חיים יעקב שפירא", onMap: true }, { rel: "origin", geniId: "", graveId: "seed_kovno_zakheim", name: "קובנה — מוצא משפחת זקהיים", onMap: true, note: "בת בן ציון זקהיים (קובנה)" }],
   "83877": [{ rel: "spouse", geniId: "", graveId: "40375", name: "שמואל הלוי צוקרמן", onMap: true }],
-  "FT034": [{ rel: "child", geniId: "", graveId: "74463", name: "אסתר ליבא שפירא", onMap: true }, { rel: "spouse", geniId: "6000000005240376180", graveId: "seed_faiga_malka_zakheim", name: "פייגא מלכה זקהיים", onMap: true, note: "אשתו (Geni)" }, { rel: "parent", geniId: "6000000005236937162", graveId: "seed_yisrael_zak_zakheim", name: "ר' ישראל ז\"ק ה\"ם", onMap: true, note: "אב: ר' ישראל ז\"ק ה\"ם (Geni)" }],
+  "FT034": [{ rel: "child", geniId: "", graveId: "74463", name: "אסתר ליבא שפירא", onMap: true }, { rel: "spouse", geniId: "6000000005240376180", graveId: "seed_faiga_malka_zakheim", name: "פייגא מלכה זקהיים", onMap: true, note: "אשתו (Geni)" }, { rel: "parent", geniId: "6000000005236937162", graveId: "seed_yisrael_zak_zakheim", name: "ר' ישראל ז\\", onMap: true, note: "אב: ר' ישראל ז\"ק ה\"ם (Geni)" }],
   "FT060": [{ rel: "parent", geniId: "6000000178917217904", graveId: "FT070", name: "ר' נחום שרלין", onMap: true }, { rel: "spouse", geniId: "6000000178918544833", graveId: "FT061", name: "חוה גיטל שרלין", onMap: true }, { rel: "child", geniId: "6000000002683091075", graveId: "40371", name: "הדסה צוקרמן (שרלין)", onMap: true }, { rel: "ancestor", geniId: "4157971353870051066", graveId: "FT080", name: "ר' יהושע צייטלין", onMap: true, note: "סבא של אשתו חוה גיטל" }],
   "FT061": [{ rel: "spouse", geniId: "6000000002180947497", graveId: "FT060", name: "רבי ניסן נתן שרלין", onMap: true }],
   "FT063": [{ rel: "child", geniId: "", graveId: "63478", name: "הלל שרלין", onMap: true }],
@@ -506,6 +523,20 @@
       return "";
     }
 
+    const CONF_LABELS = {
+      verified: "מאומת",
+      partial: "חלקי",
+      geni_only: "Geni בלבד",
+      hypothesis: "השערה",
+      surname_only: "שם משפחה בלבד",
+    };
+
+    function confidenceTag(g) {
+      if (!g.linkConfidence) return "";
+      const label = CONF_LABELS[g.linkConfidence] || g.linkConfidence;
+      return `<span class="tag tag-conf-${escapeHtml(g.linkConfidence)}" title="${escapeHtml(g.linkNote || "")}">${escapeHtml(label)}</span>`;
+    }
+
     function markerColor(g) {
       const palette = COLORS[g.kind] || COLORS.ancestor;
       if (g.exact) return palette.exact;
@@ -600,6 +631,11 @@
       html += `<strong>קרבה:</strong> ${relationLabel(g)}<br>`;
       html += `<strong>קו:</strong> ${g.line}<br>`;
       html += `<strong>סוג:</strong> ${typeLabel}<br>`;
+      if (g.linkConfidence) {
+        html += `<strong>קשר משפחתי:</strong> ${CONF_LABELS[g.linkConfidence] || g.linkConfidence}`;
+        if (g.linkNote) html += ` — ${escapeHtml(g.linkNote)}`;
+        html += `<br>`;
+      }
       if (g.death) html += `<strong>נפטר/ה:</strong> ${g.death}<br>`;
       html += `<strong>בית קברות:</strong> ${g.cemetery}<br>`;
       html += `<strong>מיקום:</strong> ${g.plot}<br>`;
@@ -635,6 +671,7 @@
     let filterCountry = "";
     let filterLine = "";
     let filterGen = "";
+    let filterConf = "";
 
     function countryOrder(code) {
       if (code === "IL") return 0;
@@ -663,6 +700,7 @@
         const gen = typeof g.ancestorGen === "number" ? String(g.ancestorGen) : "";
         if (gen !== filterGen) return false;
       }
+      if (filterConf && g.linkConfidence !== filterConf) return false;
       return true;
     }
 
@@ -757,7 +795,8 @@
               ? '<span class="tag tag-exact">±10 מ\'</span>'
               : '<span class="tag tag-approx">משוער</span>';
             const tagGen = kindTag(g);
-            el.innerHTML = `<div class="name">${g.name} ${tagGen}${tagType}${tagLoc}${countryTag(g)}</div>
+            const tagConf = confidenceTag(g);
+            el.innerHTML = `<div class="name">${g.name} ${tagGen}${tagType}${tagLoc}${tagConf}${countryTag(g)}</div>
               <div class="meta">${relationLabel(g)}</div>
               <div class="meta">${g.death || ""} · ${g.plot}</div>`;
             el.addEventListener("click", () => flyToGrave(g.id));
@@ -775,6 +814,7 @@
     const countrySelect = document.getElementById("filter-country");
     const lineSelect = document.getElementById("filter-line");
     const genSelect = document.getElementById("filter-gen");
+    const confSelect = document.getElementById("filter-conf");
     [...new Set(GRAVES.map(g => g.countryCode).filter(Boolean))]
       .sort((a, b) => countryOrder(a) - countryOrder(b))
       .forEach(code => {
@@ -798,9 +838,19 @@
         opt.textContent = String(gen);
         genSelect.appendChild(opt);
       });
+    const confOrder = ["verified", "partial", "geni_only", "hypothesis", "surname_only"];
+    [...new Set(GRAVES.map(g => g.linkConfidence).filter(Boolean))]
+      .sort((a, b) => confOrder.indexOf(a) - confOrder.indexOf(b))
+      .forEach(level => {
+        const opt = document.createElement("option");
+        opt.value = level;
+        opt.textContent = CONF_LABELS[level] || level;
+        confSelect.appendChild(opt);
+      });
     countrySelect.addEventListener("change", () => { filterCountry = countrySelect.value; applyFilters(); });
     lineSelect.addEventListener("change", () => { filterLine = lineSelect.value; applyFilters(); });
     genSelect.addEventListener("change", () => { filterGen = genSelect.value; applyFilters(); });
+    confSelect.addEventListener("change", () => { filterConf = confSelect.value; applyFilters(); });
     document.getElementById("btn-israel").addEventListener("click", () => {
       map.fitBounds([[31.76, 35.20], [31.80, 35.26]], { padding: [30, 30], maxZoom: 16 });
     });
@@ -808,9 +858,11 @@
       filterCountry = "";
       filterLine = "";
       filterGen = "";
+      filterConf = "";
       countrySelect.value = "";
       lineSelect.value = "";
       genSelect.value = "";
+      confSelect.value = "";
       applyFilters();
     });
 
