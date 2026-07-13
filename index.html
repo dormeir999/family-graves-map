@@ -304,11 +304,12 @@
     }
 
     function profileBarHtml(g) {
-      const p = PROFILE_LINKS_BY_ID[g.id];
-      if (!p) return "";
+      const p = PROFILE_LINKS_BY_ID[g.id] || {};
+      const geni = p.geni || (g.geniId ? `https://www.geni.com/people/-/${g.geniId}` : "");
+      if (!p.mh && !geni) return "";
       let h = '<div class="popup-profiles">';
       if (p.mh) h += `<a class="profile-btn profile-mh" href="${escapeHtml(p.mh)}" target="_blank" rel="noopener noreferrer">MyHeritage — פרופיל</a>`;
-      if (p.geni) h += `<a class="profile-btn profile-geni" href="${escapeHtml(p.geni)}" target="_blank" rel="noopener noreferrer">Geni — פרופיל</a>`;
+      if (geni) h += `<a class="profile-btn profile-geni" href="${escapeHtml(geni)}" target="_blank" rel="noopener noreferrer">Geni — פרופיל</a>`;
       h += "</div>";
       return h;
     }
