@@ -714,19 +714,19 @@
         return { color: "#7f8c8d", weight: 2, opacity: 0.85, dashArray: "6 6", interactive: false };
       }
       if (kind === "parent") {
-        // older hops → darker blue
+        // older = darker: direct parent already dark blue; farther ancestors darker
         return {
-          color: lerpColor("#5dade2", "#0b1c2c", t),
+          color: lerpColor("#1a5276", "#0a1628", t),
           weight: Math.max(2, 4 - hop * 0.35),
-          opacity: 0.9,
+          opacity: 0.95,
           interactive: false,
         };
       }
-      // child: farther descendants → lighter amber
+      // younger = lighter: direct child light amber; farther descendants paler
       return {
-        color: lerpColor("#b9770e", "#f9e79f", t),
+        color: lerpColor("#f5b041", "#fef9e7", t),
         weight: Math.max(2, 4 - hop * 0.35),
-        opacity: 0.9,
+        opacity: 0.95,
         interactive: false,
       };
     }
