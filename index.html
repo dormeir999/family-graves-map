@@ -189,7 +189,7 @@
       { id: "48739", name: "טובא גינענדל שרלין", kind: "inlaw", role: "שם משפחה שרלין — קשר לקו ניסן לא הוכח", line: "שרלין", linkConfidence: "surname_only", linkNote: "שם משפחה בלבד — בת אברהם מענדיל", country: "ישראל", countryCode: "IL", death: "1941", cemetery: "הר הזיתים", plot: "הנביאים", lat: 31.772888, lng: 35.244723, exact: true, locationSource: "cod", url: "https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=48739" },
       { id: "yaakov1887", ftId: "FT041", name: "יעקב הלוי צוקרמן", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא (אבי שמואל · צד אמא) · הקבר הישן ביותר", line: "צוקרמן", linkConfidence: "verified", linkNote: "Montefiore 1866 #2182; father name unknown", country: "ישראל", countryCode: "IL", death: "1887", cemetery: "הר הזיתים", plot: "לא במאגר — שאל במשרד (02-6275050)", lat: 31.773, lng: 35.243, exact: false, offset: [0.0008, 0.0012] },
       { id: "aaron1904", ftId: "FT021", geniId: "6000000001133675244", name: "רבי אהרן לנאל", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (צד סבתא · אבי שרגא פייבל)", line: "לנאל", linkConfidence: "verified", linkNote: "Arrived Israel 1877", country: "ישראל", countryCode: "IL", death: "1904", cemetery: "הר הזיתים", plot: "לא במאגר — שאל במשרד", lat: 31.773, lng: 35.243, exact: false, offset: [0.0004, 0.0006] },
-      { id: "meshulam1903", ftId: "FT030", name: "משולם זלמן שפירא", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (צד שפירא)", line: "שפירא", linkConfidence: "verified", linkNote: "Son of Chaim Yaakov", country: "ישראל", countryCode: "IL", death: "1903", cemetery: "הר הזיתים", plot: "חלקת פרושים — לא במאגר", lat: 31.773, lng: 35.243, exact: false, offset: [0.0, 0.0003] },
+      { id: "meshulam1903", ftId: "FT030", name: "משולם זלמן שפירא", kind: "ancestor", ancestorGen: 4, role: "סב-סבא-רבא (צד שפירא)", line: "שפירא", linkConfidence: "verified", linkNote: "Son of Chaim Yaakov; Mehokek inscription confirmed 2026-07-24", country: "ישראל", countryCode: "IL", death: "1903", cemetery: "הר הזיתים", plot: "חלקת מחוקק · שורה י״ט · י״ח (Helkat Mehokek עמ' 163)", lat: 31.77462, lng: 35.2422, exact: false, cemeteryOnly: false, locationSource: "mehokek", offset: [8e-05, -0.00012] },
       { id: "chaim1908", ftId: "FT031", name: "רבי חיים יעקב שפירא", kind: "ancestor", ancestorGen: 5, role: "סב-סבא-רבא-רבא · בעלה של אסתר ליבא", line: "שפירא", linkConfidence: "verified", linkNote: "Av Beit Din Jerusalem Perushim; grave photo exists", country: "ישראל", countryCode: "IL", death: "1908", cemetery: "הר הזיתים", plot: "סביר ליד אסתר (שורה 19) — לא במאגר · הערכה ~±30 מ'", lat: 31.774603, lng: 35.242187, exact: false, offset: [0.00015, 0.0002] },
       { id: "benzion", ftId: "FT010", name: "בן ציון שפירא", kind: "ancestor", ancestorGen: 3, role: "סבא-רבא", line: "שפירא", linkConfidence: "verified", linkNote: "Zionist Congress delegate", country: "ישראל", countryCode: "IL", death: "1972", cemetery: "הר המנוחות", plot: "חלקה לא ידועה", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [0.0003, 0.0005] },
       { id: "avi", ftId: "FT026", name: "אברהם יצחק לנאל", kind: "collateral", role: "אח של סבתא מרים", line: "לנאל", linkConfidence: "verified", linkNote: "Dayan; Supreme Rabbinical Court", country: "ישראל", countryCode: "IL", death: "2013", cemetery: "הר המנוחות", plot: "סביר חלקת הרבנים", lat: 31.79813, lng: 35.17773, exact: false, cemeteryOnly: true, offset: [0.0005, 0.0] },
@@ -263,6 +263,7 @@
     const COD = (id) => `https://cityofdavid.org.il/locating-graves-mount-of-olives/grave-card/?grave-card=${id}`;
     const srcLink = (text, url) => ({ type: "link", text, url });
     const srcNote = (text) => ({ type: "note", text });
+    const srcImage = (src, caption) => ({ type: "image", src, text: caption || "" });
 
     const MH_GEDCOM = {
       "I11": "https://www.myheritage.co.il/profile-OYYV6K4BGEW5FERSRNUY66G5IHC7SUY-1000011/%D7%91%D7%9F-%D7%A6%D7%99%D7%95%D7%9F-%D7%A9%D7%A4%D7%99%D7%A8%D7%90",
@@ -415,7 +416,10 @@
       "meshulam1903": [
         srcLink("המכלול (חיים יעקב) — בנו; נפטר י\"ד כסלו תרס\"ד (1903)", "https://www.hamichlol.org.il/%D7%A8%D7%91%D7%99_%D7%97%D7%99%D7%99%D7%9D_%D7%99%D7%A2%D7%A7%D7%91_%D7%A9%D7%A4%D7%99%D7%A8%D7%90"),
         srcLink("GEDCOM — MyHeritage: סב-סבא; אשתו חנה רייזל ראשגולין (מוזכרת במכלול)", MH_GEDCOM.I16),
-        srcNote("Helkat Mehokek + COD ss=פרושים: לא נמצא"),
+        srcLink("Helkat Mehokek (HebrewBooks #67641) — עמ' 163", "https://www.hebrewbooks.org/pdfpager.aspx?req=67641&pgnum=163"),
+        srcNote("חלקת מחוקק · שורה י״ט · י״ח — פ״נ הרבני ר' משולם זלמן בהרב מו״ה חיים יעקב ד״ץ נ״י · נ' י״ד כסלו תרס״ד"),
+        srcImage("assets/meshulam-mehokek-p163.png", "צילום מחלקת מחוקק עמ' 163"),
+        srcLink("עיר דוד #74463 — אסתר ליבא שורה 19 (אזור קרוב במפה)", COD("74463")),
       ],
       "chaim1908": [
         srcLink("המכלול — אב\"ד; נולד 1832 ליטא, נפטר כ\"א סיון תרס\"ח", "https://www.hamichlol.org.il/%D7%A8%D7%91%D7%99_%D7%97%D7%99%D7%99%D7%9D_%D7%99%D7%A2%D7%A7%D7%91_%D7%A9%D7%A4%D7%99%D7%A8%D7%90"),
@@ -581,6 +585,8 @@
       if (g.cemeteryOnly) return "מיקום: שער/אזור בית הקברות בלבד — לא מיקום הקבר";
       if (g.locationSource === "geni_city") return "מיקום עיר בלבד (Geni) — לא נקודת קבר מדויקת";
       if (g.locationSource === "geni_gps") return "מיקום Geni (עיר/GPS) — לא כרטיס עיר דוד";
+      if (g.locationSource === "mehokek") return "חלקה/שורה מאומתת מחלקת מחוקק — אין עדיין GPS מעיר דוד · ניווט לפי שורה/מספר";
+      if (g.locationSource === "estimate") return "מיקום משוער (לא כרטיס עיר דוד)";
       if (g.id === "chaim1908") return "מיקום משוער ליד אסתר ליבא — לא במאגר · ~±30 מ'";
       return "קבורה מאושרת · מיקום לא ידוע במאגר — שאל במשרד הר הזיתים";
     }
@@ -857,6 +863,10 @@
         sources.forEach((item) => {
           if (item.type === "link") {
             html += `<li><a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.text)}</a></li>`;
+          } else if (item.type === "image") {
+            html += `<li class="src-img"><img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.text)}" style="max-width:100%;border:1px solid #ddd;border-radius:4px;margin:4px 0"/>`;
+            if (item.text) html += `<div class="src-note">${escapeHtml(item.text)}</div>`;
+            html += `</li>`;
           } else {
             html += `<li class="src-note">${escapeHtml(item.text)}</li>`;
           }
