@@ -767,7 +767,8 @@
           .addTo(lineageLayer);
       }
       if (!map.hasLayer(lineageLayer)) lineageLayer.addTo(map);
-      lineageLayer.bringToFront();
+      // Keep markers above lines so pins stay clickable
+      markerLayers.forEach(({ m }) => m.bringToFront());
       refreshMarkerStyles();
     }
 
@@ -800,8 +801,12 @@
       if (!entry) return;
       const [lat, lng] = markerCoords(entry.g);
       selectPerson(graveId);
-      map.setView([lat, lng], 17);
-      entry.m.openPopup();
+      map.setView([lat, lng], 17, { animate: false });
+      // Defer so setView / lineage redraw don't swallow the popup
+      setTimeout(() => {
+        entry.m.openPopup();
+        markerLayers.forEach(({ m }) => m.bringToFront());
+      }, 0);
     }
 
     function edgesHtml(g) {
@@ -959,9 +964,16 @@
             const m = L.circleMarker([mLat, mLng], {
               radius, fillColor: color, color: "#fff", weight: 2, fillOpacity: g.exact ? 0.92 : 0.65,
             }).addTo(map).bindPopup(popupHtml(g), { maxWidth: 340 });
-            m.on("click", (ev) => { L.DomEvent.stopPropagation(ev); });
+            m.on("click", (ev) => {
+              ignoreNextMapClick = true;
+              // Leaflet event — must stop the DOM event or map click closes the popup
+              if (ev && ev.originalEvent) L.DomEvent.stopPropagation(ev.originalEvent);
+              L.DomEvent.stopPropagation(ev);
+              selectPerson(g.id);
+            });
             m.on("popupopen", () => {
               selectPerson(g.id);
+              markerLayers.forEach(({ m: mk }) => mk.bringToFront());
               const el = m.getPopup().getElement();
               if (el) {
                 L.DomEvent.disableClickPropagation(el);
@@ -1055,7 +1067,14 @@
       if (selectedId) drawLineage();
     });
     document.getElementById("btn-clear-lineage").addEventListener("click", () => clearLineage());
-    map.on("click", () => { clearLineage(); });
+    let ignoreNextMapClick = false;
+    map.on("click", () => {
+      if (ignoreNextMapClick) {
+        ignoreNextMapClick = false;
+        return;
+      }
+      clearLineage();
+    });
     document.getElementById("btn-israel").addEventListener("click", () => {
       map.fitBounds([[31.76, 35.20], [31.80, 35.26]], { padding: [30, 30], maxZoom: 16 });
     });
