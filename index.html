@@ -15,6 +15,14 @@
     header h1 { font-size: 1.15rem; font-weight: 600; }
     header p { font-size: 0.82rem; opacity: 0.85; margin-top: 4px; }
     header .accuracy-note { font-size: 0.76rem; opacity: 0.75; margin-top: 6px; max-width: 520px; line-height: 1.4; }
+    header .tree-links {
+      font-size: 0.82rem; margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
+    }
+    header .tree-links a {
+      color: #aed6f1; text-decoration: none; border-bottom: 1px solid rgba(174, 214, 241, 0.45);
+    }
+    header .tree-links a:hover { color: #fff; border-bottom-color: #fff; }
+    header .tree-links .tree-label { opacity: 0.75; font-size: 0.76rem; }
     .legend { display: flex; flex-wrap: wrap; gap: 12px 16px; font-size: 0.76rem; max-width: 480px; }
     .legend span { display: flex; align-items: center; gap: 5px; }
     .dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.25); flex-shrink: 0; }
@@ -127,6 +135,10 @@
     <div>
       <h1>מפת קברי המשפחות: שפירא · צוקרמן · לנאל · שרלין</h1>
       <p class="accuracy-note">מיקומים מדויקים: GPS מכרטיסי עיר דוד · דיוק משוער <strong>±10 מ'</strong> — מגיעים לחלקה/שורה, לא לשבריר הסנטימטר. ניווט בשטח לפי גוש · חלקה · שורה · מספר קבר.</p>
+      <p class="tree-links">
+        <span class="tree-label">Geni:</span>
+        <a href="https://www.geni.com/list/ancestors#20" target="_blank" rel="noopener noreferrer">רשימת אבות (20 דורות)</a>
+      </p>
     </div>
     <div class="legend">
       <span><i class="dot dot-blood"></i> דם</span>
