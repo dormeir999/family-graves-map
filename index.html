@@ -130,7 +130,8 @@
     .tag-ev-cod { background: #1e8449; color: #fff; }
     .tag-ev-montefiore { background: #1a5276; color: #fff; }
     .tag-ev-chevra { background: #784212; color: #fff; }
-    .grave-item.hidden, .grave-section.hidden { display: none !important; }
+    .grave-item .popup-profiles { margin: 6px 0 2px; }
+    .grave-item .profile-btn { font-size: 0.72rem; padding: 3px 8px; }
     @media (max-width: 768px) {
       #layout { flex-direction: column-reverse; height: auto; }
       #sidebar { width: 100%; max-height: 40vh; border-left: none; border-top: 1px solid #ddd; }
@@ -1257,10 +1258,14 @@
             const tagGen = kindTag(g);
             const tagConf = confidenceTag(g);
             const tagEv = evidenceTags(g);
+            const prof = profileBarHtml(g);
             el.innerHTML = `<div class="name">${g.name} ${tagGen}${tagType}${tagLoc}${tagConf}${tagEv}${countryTag(g)}</div>
               <div class="meta">${relationLabel(g)}</div>
-              <div class="meta">${sidebarLife(g) || g.death || ""} · ${g.plot}</div>`;
-            el.addEventListener("click", () => flyToGrave(g.id));
+              <div class="meta">${sidebarLife(g) || g.death || ""} · ${g.plot}</div>${prof}`;
+            el.addEventListener("click", (e) => {
+              if (e.target.closest("a.profile-btn")) return;
+              flyToGrave(g.id);
+            });
             sec.appendChild(el);
             graveItems[g.id] = el;
           });
